@@ -37,7 +37,7 @@ Main components to consider for integration:
 \end{itemize}
 \end{multicols}
 \begin{center}
-\includegraphics[width=.8\textwidth]{figures/mirgecom_cartoon.png}
+\includegraphics[width=.7\textwidth]{figures/mirgecom_cartoon.png}
 \end{center}
 \end{frame}
 
@@ -52,6 +52,20 @@ Main components to consider for integration:
 \end{multicols}
 \begin{center}
 \includegraphics[width=.8\textwidth]{figures/ultimate_integration.png}
+\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Planning for the plan - partial integration}
+\begin{multicols}{2}
+\begin{itemize}
+  \item Use \textit{Prometheus} as-is, generate Mixture API to file 
+  \item Use Mixture API directly in \textit{mirgecom}
+  \item Useful for testing and development of \textit{mirgecom} components that use Mixture API (regardless of source)
+  \item Far less convenient to use (from user's perspective)
+\end{itemize}
+\end{multicols}
+\begin{center}
+\includegraphics[width=.8\textwidth]{figures/partial_cartoon.png}
 \end{center}
 \end{frame}
 
@@ -74,10 +88,11 @@ Main components to consider for integration:
 %\end{multicols}
 %\end{frame}
 
-\begin{frame}\frametitle{\textit{Prometheus} EOS}
+\begin{frame}\frametitle{\textit{Prometheus} Mixture API $\rightarrow$ \textit{mirgecom} EOS}
 \begin{multicols}{2}
 \begin{itemize}
-   \item Interface functions
+   \item \textit{Mirgecom} EOS interface (\href{https://mirgecom.readthedocs.io/en/latest/operators.html#equations-of-state}{(\textcolor{blue}{https://mirgecom.readthedocs.io/en/latest/operators.html#equations-of-state})})
+   \item \textit{Prometheus} Mixture API thermo properties functions:
    \begin{itemize}
       \item get\_temperature(e, Y, Tguess) $\rightarrow (T, Cp_{mix}, R_{mix})$
       \item get\_pressure(Y, T) $\rightarrow P_{mix}$ 
@@ -88,13 +103,12 @@ Main components to consider for integration:
       \item get\_species\_cp\_R(T) $\rightarrow (Cp_{i})$ 
       \item get\_species\_enthalpies(T, Y) $\rightarrow (h_{i})$
    \end{itemize}
-   \item Wrap interface to \textit{mirgecom} standard EOS - small to medium effort
-   \item Special considerations
-   \begin{itemize}
-      \item Species ordering, naming
-      \item Buffer species handling
-   \end{itemize}
-   \item Potential tests:
+%   \item Special considerations
+%   \begin{itemize}
+%      \item Species ordering, naming
+%      \item Buffer species handling
+%   \end{itemize}
+   \item Potential tests in inviscid setting:
    \begin{itemize}
      \item Species-specific mixture tests (i.e. one species-at-a-time)
      \item Calorically perfect mixture - Compare Prometheus vs. \textit{mirgecom}@CPEOS
@@ -133,3 +147,32 @@ Create \textit{mirgecom}-EOS-compatible wrappers for \textit{Prometheus} interfa
    \item get\_species\_names - for I/O, viz/analysis
 \end{itemize}           
 \end{frame}
+
+\begin{frame}\frametitle{Reactive Flow Equations}
+  \begin{align*}
+    \pop{\rho}{t} + \Grad\cdot\pp{ \rho \bvec{u} } &= 0 \\
+    \pop{ \rho\bvec{u} }{t} + \Grad\cdot\pp{ \rho \bvec{u}\bvec{u} } &= -\Grad p + \Grad\cdot\bvec{\tau} \\
+    \pop{ \rho E }{t} + \Grad\cdot\pp{ \rho E \bvec{u} } &= -\Grad\cdot\pp{ p\bvec{u} } + \Grad\cdot\pp{ \bvec{\tau} \cdot \bvec{u} } - \Grad\cdot\bvec{q} \\
+    \pop{\rho Y_{i}}{t} + \Grad\cdot\psq{ \rho Y_{i}\pp{ \bvec{u} + \bvec{V}_{i} } } &= W_{i}\dot{\omega}_{i},\quad i = 1,\dots,N
+  \end{align*}
+  \begin{align*}
+    \bvec{\tau} = 2\mu\psq{ \mathbf{S} - \frac{1}{3}\pp{ \Grad\cdot\bvec{u} }\mathbf{I} }\\
+    \bvec{q} = -\kappa\Grad T + \sum_{i = 1}^{N}\rho Y_{i} h_{i}\bvec{V}_{i} \\
+    Y_{i}\bvec{V}_{i} = \frac{D_{im}W_{i}}{W}\Grad X_{i}\\
+  \end{align*}
+\end{frame}
+%======================================================================
+
+%======================================================================
+\begin{frame}\frametitle{Chemical Source Term}
+  \begin{align*}
+    \omega_{i} &= \nu_{ij}R_{j} \\
+    R_{j} &= k_{j}(T)\psq{ \prod_{m = 1}^{N}\pp{\frac{\rho Y_{m}}{W_{m}}}^{\nu_{mj}^{\prime}} - \frac{1}{K_{j}(T)}\prod_{n = 1}^{N}\pp{\frac{\rho Y_{m}}{W_{m}}}^{\nu_{nj}^{\prime\prime}}  } \\
+    K_{j}(T) &= \pp{ \frac{p_{0}}{RT} }^{\sum_{i = 1}^{N}\nu_{ij}}\exp\psq{ -\sum_{m = 1}^{N} \frac{\nu_{mj}g_{m}(T)}{RT} } \\
+    k_{j}(T) &= A_{j} T^{b_{j}}\exp\pp{ -\frac{E_{a,j}}{RT} } \\
+    \frac{g_{i}(T)}{RT} &= \frac{h_{i}(T)}{RT} - \frac{s_{i}}{R} \\
+    \frac{h_{i}(T)}{RT},\,\frac{s_{i}(T)}{R} &: \text{NASA polynomials}
+  \end{align*}
+\end{frame}
+%======================================================================
+\end{document}
