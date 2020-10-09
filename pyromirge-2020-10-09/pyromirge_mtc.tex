@@ -32,7 +32,7 @@ Main components to consider for integration:
 \begin{itemize}
   \item \textit{mirgecom}: Python package implements CEESD production simulation API
   \item CEESD community code: \href{https://github.com/illinois-ceesd/mirgecom}{(\textcolor{blue}{https://github.com/illinois-ceesd/mirgecom})}
-  \item Builds on several pre-existing packages; most notably A.K.'s suite of Python tools
+  \item Builds on several pre-existing packages; most notably Kl{\"o}ckner's suite of Python tools
   \item Users' main interface to engaging CEESD MIRGE machinery to run on modern platforms
 \end{itemize}
 \end{multicols}
@@ -48,6 +48,7 @@ Main components to consider for integration:
   \item User provides mixture XML input
   \item \textit{Mirgecom} interfaces \textit{Prometheus} Python package to generate mixture API inline
   \item \textit{Prometheus} Python package depends on \textit{Cantera}
+  \item Question: Wrap generated API, or directly generate \textit{mirgecom} EOS, chemistry, transport?
 \end{itemize}
 \end{multicols}
 \begin{center}
@@ -69,6 +70,22 @@ Main components to consider for integration:
 \end{center}
 \end{frame}
 
+\begin{frame}\frametitle{A little more about \textit{mirgecom}}
+\begin{center}
+(\href{https://mirgecom.readthedocs.io/en/latest/operators.html}{\textcolor{blue}{https://mirgecom.readthedocs.io/en/latest/operators.html}})\\
+Governing equations for compressible, reactive flow:
+\begin{equation}
+  \frac{\partial\mathbf{Q}}{\partial{t}} = \mathbf{S} - (\nabla \cdot \mathbf{F}^I) + (\nabla \cdot \mathbf{F}^V)
+\end{equation}
+Where $\mathbf{Q} = [\rho, \rho{E}, \rho\vec{V}, \rho{Y}_\alpha]$, and the inviscid, viscous flux, and source vectors are given by:
+\begin{equation}
+%\begin{align}
+\mathbf{F}^I = \begin{bmatrix} \rho\vec{V}\\(\rho{E} + p)\vec{V}\\\rho(\vec{V} \otimes \vec{V}) + p\delta_{ij}\\\rho{Y}_\alpha\vec{V}\end{bmatrix}, \mathbf{F}^V = \begin{bmatrix}0\\\mathbf{\tau}\cdot\vec{V} - \vec{q}\\\mathbf{\tau}\\\phi_\alpha\end{bmatrix}, \mathbf{S} = \begin{bmatrix}0\\0\\0\\W_\alpha\dot{\omega}_\alpha\end{bmatrix}
+%\end{align}
+\end{equation}
+\textit{mirgecom} currently implements only $\mathbf{F}^I$ in the Euler module, with $\mathbf{S}$ trivially added.
+\end{center}
+\end{frame}
 %\begin{frame}\frametitle(Integrating \textit{Prometheus} code generator}
 %\begin{multicols}{2}
 %\begin{itemize}
@@ -89,20 +106,27 @@ Main components to consider for integration:
 %\end{frame}
 
 \begin{frame}\frametitle{\textit{Prometheus} Mixture API $\rightarrow$ \textit{mirgecom} EOS}
+\begin{center}
+  \textit{Mirgecom} EOS interface (\href{https://mirgecom.readthedocs.io/en/latest/operators.html\#equations-of-state}{\textcolor{blue}{https://mirgecom.readthedocs.io/en/latest/operators.html\#equations\-of\-state}})
+\end{center}
 \begin{multicols}{2}
 \begin{itemize}
-   \item \textit{Mirgecom} EOS interface (\href{https://mirgecom.readthedocs.io/en/latest/operators.html#equations-of-state}{(\textcolor{blue}{https://mirgecom.readthedocs.io/en/latest/operators.html#equations-of-state})})
-   \item \textit{Prometheus} Mixture API thermo properties functions:
-   \begin{itemize}
-      \item get\_temperature(e, Y, Tguess) $\rightarrow (T, Cp_{mix}, R_{mix})$
-      \item get\_pressure(Y, T) $\rightarrow P_{mix}$ 
-      \item get\_mix\_cp(T, Y) $\rightarrow (Cp_{mix})$ 
-      \item get\_mix\_cv(T, Y) $\rightarrow (Cv_{mix})$
-      \item get\_mix\_e(T, Y) $\rightarrow (e)$
-      \item get\_mix\_enthalpy(T, Y) $\rightarrow (h_{mix})$
-      \item get\_species\_cp\_R(T) $\rightarrow (Cp_{i})$ 
-      \item get\_species\_enthalpies(T, Y) $\rightarrow (h_{i})$
-   \end{itemize}
+  \item Inviscid setting - EOS used for pressure terms in $\mathbf{F}^I$, soln initialization, boundary conditions
+  \item \textit{Prometheus} Mixture API thermo properties functions:
+  \begin{itemize}
+    \item Mixture properties: $(e, T, p, Cp, R, h)$
+    \item Species properties: $(h_\alpha, Cp_\alpha, R_\alpha)$
+    % \item get\_temperature(e, Y, Tguess) $\rightarrow (T, Cp_{mix}, R_{mix})$
+    % \item get\_pressure(Y, T) $\rightarrow P_{mix}$ 
+    % \item get\_mix\_cp(T, Y) $\rightarrow (Cp_{mix})$ 
+    % \item get\_mix\_cv(T, Y) $\rightarrow (Cv_{mix})$
+    % \item get\_mix\_e(T, Y) $\rightarrow (e)$
+    % \item get\_mix\_enthalpy(T, Y) $\rightarrow (h_{mix})$
+    % \item ( ... )
+    % \item get\_species\_cp\_R(T) $\rightarrow (Cp_{i})$ 
+    % \item get\_species\_enthalpies(T, Y) $\rightarrow (h_{i})$
+  \end{itemize}
+  \item Plenty rich enough to implement \textit{mirgecom} mixture EOS:\\$P = (\gamma_{mix} - 1)\bar\rho{e}_{mix}$,\\ $T = \frac{(\gamma_{mix} - 1)}{R_{mix}} e_{mix}$
 %   \item Special considerations
 %   \begin{itemize}
 %      \item Species ordering, naming
@@ -118,27 +142,35 @@ Main components to consider for integration:
 \end{multicols}
 \end{frame}
 
-\begin{frame}\frametitle{Wrappers for \textit{Prometheus} EOS}
-Create \textit{mirgecom}-EOS-compatible wrappers for \textit{Prometheus} interface functions.
-\begin{itemize}
-\item get\_pressure(state)
-\item get\_temperature(state)
-\item get\_internal\_energy(state)
-\item get\_speed\_of\_sound(state)
-\end{itemize}
-\end{frame}
+%\begin{frame}\frametitle{Wrappers for \textit{Prometheus} EOS}
+%Create \textit{mirgecom}-EOS-compatible wrappers for \textit{Prometheus} interface functions.
+%\begin{itemize}
+%\item get\_pressure(state)
+%\item get\_temperature(state)
+%\item get\_internal\_energy(state)
+%\item get\_speed\_of\_sound(state)
+%\end{itemize}
+%\end{frame}
 
 \begin{frame}\frametitle{\textit{Prometheus} chemistry \& transport}
+\begin{multicols}{2}
 \begin{itemize}
-\item Chemistry - get\_net\_production\_rates($\rho$, T, Y) $\rightarrow (\dot{\omega}_i)$
+\item \textit{Prometheus} chemistry API $\rightarrow (\dot{\omega}_i)$
 \item For explicit integration - directly feeds species source terms $S_i = (W_i \dot{\omega}_i)$
-\item Transport
+\item Potential tests in the inviscid setting
+\begin{itemize}
+  \item Autoignition - high temperature box at static pressure, San Diego validation data for 32-species $C_{2}H_{4}$ from Sanchez\&Williams, Prog Energy Comb Sci (2014) 
+  \item ... still thinking
+\end{itemize}
+\item \textit{Prometheus} transport API:
    \begin{itemize}
       \item Species:  $(\kappa_i, \mu_i, D_{ij})$
       \item Mixture: $(\kappa, \mu, D_i)$
+      \item Feeds viscous flux $\mathbf{F}^V$ through diffusive fluxes, viscous stress tensor (work in-progress)
    \end{itemize}
 \end{itemize}
-%\end{multicols}
+\includegraphics[width=.4\textwidth]{figures/autoignition.png}
+\end{multicols}
 \end{frame}
 
 \begin{frame}\frametitle{\textit{Prometheus} / \textit{mirgecom} wishlist}
@@ -148,31 +180,49 @@ Create \textit{mirgecom}-EOS-compatible wrappers for \textit{Prometheus} interfa
 \end{itemize}           
 \end{frame}
 
-\begin{frame}\frametitle{Reactive Flow Equations}
-  \begin{align*}
-    \pop{\rho}{t} + \Grad\cdot\pp{ \rho \bvec{u} } &= 0 \\
-    \pop{ \rho\bvec{u} }{t} + \Grad\cdot\pp{ \rho \bvec{u}\bvec{u} } &= -\Grad p + \Grad\cdot\bvec{\tau} \\
-    \pop{ \rho E }{t} + \Grad\cdot\pp{ \rho E \bvec{u} } &= -\Grad\cdot\pp{ p\bvec{u} } + \Grad\cdot\pp{ \bvec{\tau} \cdot \bvec{u} } - \Grad\cdot\bvec{q} \\
-    \pop{\rho Y_{i}}{t} + \Grad\cdot\psq{ \rho Y_{i}\pp{ \bvec{u} + \bvec{V}_{i} } } &= W_{i}\dot{\omega}_{i},\quad i = 1,\dots,N
-  \end{align*}
-  \begin{align*}
-    \bvec{\tau} = 2\mu\psq{ \mathbf{S} - \frac{1}{3}\pp{ \Grad\cdot\bvec{u} }\mathbf{I} }\\
-    \bvec{q} = -\kappa\Grad T + \sum_{i = 1}^{N}\rho Y_{i} h_{i}\bvec{V}_{i} \\
-    Y_{i}\bvec{V}_{i} = \frac{D_{im}W_{i}}{W}\Grad X_{i}\\
-  \end{align*}
+\begin{frame}\frametitle{}
+
+\vspace*{0.2in}
+
+\begin{center}
+
+%\includegraphics[width=0.5\textwidth]{Figures/ceesd-logo-2.pdf}
+\vspace*{0.35in}
+\cPI{\huge Questions?}
+\newline
+\newline
+\vspace{5mm}
+\begin{minipage}{0.8\textwidth}
+This material is based in part upon work supported by the Department of Energy, National Nuclear Security Administration, under Award Number \textit{DE-NA0003963}.
+\end{minipage}
+\end{center}
 \end{frame}
+
+%\begin{frame}\frametitle{Reactive Flow Equations}
+%  \begin{align*}
+%    \pop{\rho}{t} + \Grad\cdot\pp{ \rho \bvec{u} } &= 0 \\
+%    \pop{ \rho\bvec{u} }{t} + \Grad\cdot\pp{ \rho \bvec{u}\bvec{u} } &= -\Grad p + \Grad\cdot\bvec{\tau} \\
+%    \pop{ \rho E }{t} + \Grad\cdot\pp{ \rho E \bvec{u} } &= -\Grad\cdot\pp{ p\bvec{u} } + \Grad\cdot\pp{ \bvec%{\tau} \cdot \bvec{u} } - \Grad\cdot\bvec{q} \\
+%    \pop{\rho Y_{i}}{t} + \Grad\cdot\psq{ \rho Y_{i}\pp{ \bvec{u} + \bvec{V}_{i} } } &= W_{i}\dot{\omega}_{i},%\quad i = 1,\dots,N
+%  \end{align*}
+%  \begin{align*}
+%    \bvec{\tau} = 2\mu\psq{ \mathbf{S} - \frac{1}{3}\pp{ \Grad\cdot\bvec{u} }\mathbf{I} }\\
+%    \bvec{q} = -\kappa\Grad T + \sum_{i = 1}^{N}\rho Y_{i} h_{i}\bvec{V}_{i} \\
+%    Y_{i}\bvec{V}_{i} = \frac{D_{im}W_{i}}{W}\Grad X_{i}\\
+%  \end{align*}
+%\end{frame}
 %======================================================================
 
 %======================================================================
-\begin{frame}\frametitle{Chemical Source Term}
-  \begin{align*}
-    \omega_{i} &= \nu_{ij}R_{j} \\
-    R_{j} &= k_{j}(T)\psq{ \prod_{m = 1}^{N}\pp{\frac{\rho Y_{m}}{W_{m}}}^{\nu_{mj}^{\prime}} - \frac{1}{K_{j}(T)}\prod_{n = 1}^{N}\pp{\frac{\rho Y_{m}}{W_{m}}}^{\nu_{nj}^{\prime\prime}}  } \\
-    K_{j}(T) &= \pp{ \frac{p_{0}}{RT} }^{\sum_{i = 1}^{N}\nu_{ij}}\exp\psq{ -\sum_{m = 1}^{N} \frac{\nu_{mj}g_{m}(T)}{RT} } \\
-    k_{j}(T) &= A_{j} T^{b_{j}}\exp\pp{ -\frac{E_{a,j}}{RT} } \\
-    \frac{g_{i}(T)}{RT} &= \frac{h_{i}(T)}{RT} - \frac{s_{i}}{R} \\
-    \frac{h_{i}(T)}{RT},\,\frac{s_{i}(T)}{R} &: \text{NASA polynomials}
-  \end{align*}
-\end{frame}
+%\begin{frame}\frametitle{Chemical Source Term}
+%  \begin{align*}
+%    \omega_{i} &= \nu_{ij}R_{j} \\
+%    R_{j} &= k_{j}(T)\psq{ \prod_{m = 1}^{N}\pp{\frac{\rho Y_{m}}{W_{m}}}^{\nu_{mj}^{\prime}} - \frac{1}{K_{j}%(T)}\prod_{n = 1}^{N}\pp{\frac{\rho Y_{m}}{W_{m}}}^{\nu_{nj}^{\prime\prime}}  } \\
+%    K_{j}(T) &= \pp{ \frac{p_{0}}{RT} }^{\sum_{i = 1}^{N}\nu_{ij}}\exp\psq{ -\sum_{m = 1}^{N} \frac{\nu_{mj}g_%{m}(T)}{RT} } \\
+%    k_{j}(T) &= A_{j} T^{b_{j}}\exp\pp{ -\frac{E_{a,j}}{RT} } \\
+%    \frac{g_{i}(T)}{RT} &= \frac{h_{i}(T)}{RT} - \frac{s_{i}}{R} \\
+%    \frac{h_{i}(T)}{RT},\,\frac{s_{i}(T)}{R} &: \text{NASA polynomials}
+%  \end{align*}
+%\end{frame}
 %======================================================================
 \end{document}
