@@ -3,38 +3,76 @@
 % TODO : NAME
 % Copy, s/NAME/yourname/
 %======================================================================
+% lookup col 1 vs. col 2
 \begin{frame}\frametitle{Integrating \textit{Prometheus} into \textit{mirgecom}}
-There are 4 \textit{Prometheus} constructs to consider for integration:
-\begin{itemize}
-\item Mechanism generation
-\item Equation of state (EOS)
-\item Chemistry
-\item ``Advanced'' transport (future)
-\end{itemize}
-\end{frame}
-
-\begin{frame}\frametitle{\textit{Prometheus} mechanism code generation}
+Main components to consider for integration:
 \begin{multicols}{2}
 \begin{itemize}
-   \item \plusplus{C} command-line utility (is not Python)
-   \item XML $\rightarrow$ \textit{Prometheus}(\textit{Cantera}) $\rightarrow$ Python interface for EOS, chemistry, (\& transport)
+  \item Code generator
+  \begin{itemize}
+    \item \plusplus{C} command-line utility 
+    \item XML $\rightarrow$ \textit{Prometheus}(\textit{Cantera}) $\rightarrow$ Python API 
+  \end{itemize}
+  \item Mixture API
+  \item Physics
+  \begin{itemize}
+    \item Thermodynamics (mixture EOS)
+    \item Chemistry (species production rates)
+    \item Transport (``advanced'' \& mixture-averaged properties)
+  \end{itemize}
+\item \textit{Cantera} TPL
 \end{itemize}
-\begin{itemize}
-   \item Integration options:
-   \begin{itemize}
-      \item Full integration - \textit{mirgecom} ingests XML, uses \textit{Prometheus} to generate mechanism, including mechanism in \textit{mirgecom} library
-      \item Partial integration - \textit{Prometheus} pre-generates mechanism for inclusion of interface into \textit{mirgecom} library
-      \item Non-integration - \textit{Prometheus} stand-alone library implements one or more mechanisms and is used as a substrate library by \textit{mirgecom} 
-   \end{itemize}
-    \item Staged integration - partial $\rightarrow$ full
-   \item Tests we can do right away (regardless of integration level):
-   \begin{itemize}
-      \item Pre-generated mechanism Python code inclusion (\textit{mirgecom} build and run)
-      \item Pre-generated mechanism function invocations (smoke tests \& screening)
-   \end{itemize}
-\end{itemize}
+\includegraphics[width=.5\textwidth]{figures/prometheus_cartoon.png}
 \end{multicols}
 \end{frame}
+
+% official faculty ref. by name?
+\begin{frame}\frametitle{A little about \textit{mirgecom}}
+\begin{multicols}{2}
+\begin{itemize}
+  \item \textit{mirgecom}: Python package implements CEESD production simulation API
+  \item CEESD community code: \href{https://github.com/illinois-ceesd/mirgecom}{(\textcolor{blue}{https://github.com/illinois-ceesd/mirgecom})}
+  \item Builds on several pre-existing packages; most notably A.K.'s suite of Python tools
+  \item Users' main interface to engaging CEESD MIRGE machinery to run on modern platforms
+\end{itemize}
+\end{multicols}
+\begin{center}
+\includegraphics[width=.8\textwidth]{figures/mirgecom_cartoon.png}
+\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Plan for \textit{Prometheus} code generation}
+\begin{multicols}{2}
+\begin{itemize}
+  \item Port \textit{Prometheus} to Python
+  \item User provides mixture XML input
+  \item \textit{Mirgecom} interfaces \textit{Prometheus} Python package to generate mixture API inline
+  \item \textit{Prometheus} Python package depends on \textit{Cantera}
+\end{itemize}
+\end{multicols}
+\begin{center}
+\includegraphics[width=.8\textwidth]{figures/ultimate_integration.png}
+\end{center}
+\end{frame}
+
+%\begin{frame}\frametitle(Integrating \textit{Prometheus} code generator}
+%\begin{multicols}{2}
+%\begin{itemize}
+%   \item Integration options:
+%   \begin{itemize}
+%      \item Full integration - \textit{mirgecom} ingests XML, uses \textit{Prometheus} to generate mechanism, %including mechanism in \textit{mirgecom} library
+%      \item Partial integration - \textit{Prometheus} pre-generates mechanism for inclusion of interface into %\textit{mirgecom} library
+%      \item Non-integration - \textit{Prometheus} stand-alone library implements one or more mechanisms and is% used as a substrate library by \textit{mirgecom} 
+%   \end{itemize}
+%    \item Staged integration - partial $\rightarrow$ full
+%   \item Tests we can do right away (regardless of integration level):
+%   \begin{itemize}
+%      \item Pre-generated mechanism Python code inclusion (\textit{mirgecom} build and run)
+%      \item Pre-generated mechanism function invocations (smoke tests \& screening)
+%   \end{itemize}
+%\end{itemize}
+%\end{multicols}
+%\end{frame}
 
 \begin{frame}\frametitle{\textit{Prometheus} EOS}
 \begin{multicols}{2}
