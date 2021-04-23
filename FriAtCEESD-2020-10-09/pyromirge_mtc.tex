@@ -1,0 +1,97 @@
+\def\CC{{C\nolinebreak[4]\hspace{-.05em}\raisebox{.4ex}{\tiny\bf ++}}}
+
+% TODO : NAME
+% Copy, s/NAME/yourname/
+%======================================================================
+\begin{frame}\frametitle{Integrating \textit{Prometheus} into \textit{mirgecom}}
+There are 4 \textit{Prometheus} constructs to consider for integration:
+\begin{itemize}
+\item Mechanism generation
+\item Equation of state (EOS)
+\item Chemistry
+\item ``Advanced'' transport (future)
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{\textit{Prometheus} mechanism code generation}
+\begin{multicols}{2}
+\begin{itemize}
+   \item \plusplus{C} command-line utility (is not Python)
+   \item XML $\rightarrow$ \textit{Prometheus}(\textit{Cantera}) $\rightarrow$ Python interface for EOS, chemistry, (\& transport)
+\end{itemize}
+\begin{itemize}
+   \item Integration options:
+   \begin{itemize}
+      \item Full integration - \textit{mirgecom} ingests XML, uses \textit{Prometheus} to generate mechanism, including mechanism in \textit{mirgecom} library
+      \item Partial integration - \textit{Prometheus} pre-generates mechanism for inclusion of interface into \textit{mirgecom} library
+      \item Non-integration - \textit{Prometheus} stand-alone library implements one or more mechanisms and is used as a substrate library by \textit{mirgecom} 
+   \end{itemize}
+    \item Staged integration - partial $\rightarrow$ full
+   \item Tests we can do right away (regardless of integration level):
+   \begin{itemize}
+      \item Pre-generated mechanism Python code inclusion (\textit{mirgecom} build and run)
+      \item Pre-generated mechanism function invocations (smoke tests \& screening)
+   \end{itemize}
+\end{itemize}
+\end{multicols}
+\end{frame}
+
+\begin{frame}\frametitle{\textit{Prometheus} EOS}
+\begin{multicols}{2}
+\begin{itemize}
+   \item Interface functions
+   \begin{itemize}
+      \item get\_temperature(e, Y, Tguess) $\rightarrow (T, Cp_{mix}, R_{mix})$
+      \item get\_pressure(Y, T) $\rightarrow P_{mix}$ 
+      \item get\_mix\_cp(T, Y) $\rightarrow (Cp_{mix})$ 
+      \item get\_mix\_cv(T, Y) $\rightarrow (Cv_{mix})$
+      \item get\_mix\_e(T, Y) $\rightarrow (e)$
+      \item get\_mix\_enthalpy(T, Y) $\rightarrow (h_{mix})$
+      \item get\_species\_cp\_R(T) $\rightarrow (Cp_{i})$ 
+      \item get\_species\_enthalpies(T, Y) $\rightarrow (h_{i})$
+   \end{itemize}
+   \item Wrap interface to \textit{mirgecom} standard EOS - small to medium effort
+   \item Special considerations
+   \begin{itemize}
+      \item Species ordering, naming
+      \item Buffer species handling
+   \end{itemize}
+   \item Potential tests:
+   \begin{itemize}
+     \item Species-specific mixture tests (i.e. one species-at-a-time)
+     \item Calorically perfect mixture - Compare Prometheus vs. \textit{mirgecom}@CPEOS
+     \item Thermally perfect mixture with linear $Cp_i$ - test temperature inversion vs. analytic? 
+   \end{itemize}
+\end{itemize}
+\end{multicols}
+\end{frame}
+
+\begin{frame}\frametitle{Wrappers for \textit{Prometheus} EOS}
+Create \textit{mirgecom}-EOS-compatible wrappers for \textit{Prometheus} interface functions.
+\begin{itemize}
+\item get\_pressure(state)
+\item get\_temperature(state)
+\item get\_internal\_energy(state)
+\item get\_speed\_of\_sound(state)
+\end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{\textit{Prometheus} chemistry \& transport}
+\begin{itemize}
+\item Chemistry - get\_net\_production\_rates($\rho$, T, Y) $\rightarrow (\dot{\omega}_i)$
+\item For explicit integration - directly feeds species source terms $S_i = (W_i \dot{\omega}_i)$
+\item Transport
+   \begin{itemize}
+      \item Species:  $(\kappa_i, \mu_i, D_{ij})$
+      \item Mixture: $(\kappa, \mu, D_i)$
+   \end{itemize}
+\end{itemize}
+%\end{multicols}
+\end{frame}
+
+\begin{frame}\frametitle{\textit{Prometheus} / \textit{mirgecom} wishlist}
+\begin{itemize}
+   \item get\_species\_index(species\_name) - useful for coding the interface/wrappers
+   \item get\_species\_names - for I/O, viz/analysis
+\end{itemize}           
+\end{frame}
