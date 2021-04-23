@@ -10,6 +10,7 @@
 \item ECP CI
 \end{itemize}
 \item IDEAS Team: Better Scientific Software through better practices
+\item Summary and next steps
 % \item Software infrastructure (1)
 % \item Case Study: Pantheon (2)
 % \item Software process engineering (2)
@@ -180,111 +181,122 @@ LLNL/LC (including Lassen): (https://lc.llnl.gov/gitlab)
 \end{multicols}
 \end{frame}
 
-
-
-\begin{frame}\frametitle{Better Scientific Software}
+% email watsongr@ornl.gov  about talking about scrum Greg Watson to talk about using Scrum and or other agile software process
+\begin{frame}\frametitle{Summary and next steps}
+DOE is providing resources for helping teams step up development, deployment, and project management strategies with emphasis on sustainability. They think it is important. We should take advantage of this.
 \begin{itemize}
-\item Improving productivity for users with computing workflows
-\item Best practices - for developing and in distributed teams and environments
-\item Software practices: Code will live longer than you think (plan now)
-\begin{itemize}
-\item Testing suites as stand-alone software suites
-\item Test-driven development (TDD)
-\item Actually test fault detection
-\item Focus on exercising your code
-\end{itemize}
-\item Community guidelines for testing (in-general) needs to be developed:
-\begin{itemize}
-\item No testing is not enough
-\item What is the risk of bugs creeping in?
-\item How much time do you spend on defects?
-\item How much compute time do you waste computing a spurious result?
-\end{itemize}
-\item With HPC risk level for defect is very high due to cost of runs
-\item Restart tests are highly valuable
-\item Code review is highly valuable (think pair coding similar in function, but cost 2x as high)
-\item Testing as a part of the development is extremely important
-\item Don't forget to test the tests, inject errors on purpose to see if the test catches
-\item Small cycles is important - develop test commit test merge test
-\item ECP CI is something to help us do CI on the HPC platforms?
-\item Deep interest in performance tracking over time - no de-facto standard - so many different angles, so many things that impact performance
-\item Interesting: Kitware has taken note, CDash providing native capability for tracking performance over time
-\item Test vs. Develop vs. Get work done (testing tax - mostly imagined)
+\item Now: Revive spack-based install
+\item Now: Identify an E4S stack that will work for us, and install to it
+\item Now: Mirror \textit{MIRGE} to gitlab@lc and start kicking the tires on ECP CI
+\item Now: Engage with IDEAS Team (invite Greg Watson@ORNL for Fri@CEESD), more to follow
+\item Iterative: Better up our software planning, performance testing, on/offboarding
+\item Longer term: Join E4S/become an E4S/ECP package
 \end{itemize}
 \end{frame}
 
-\begin{frame}\frametitle{bof1}
-\begin{itemize}
-\item build caches of common stacks
-\item OS updates underneath can be very costly
-\item dependencies work to update is very high
-\item Spack based (heavily)
-\item Container based (heavily)
-\item E4S is the preferred path to contributing to spack
-\item ECP projects
-\begin{itemize}
-\item Vis and analysis
-\item tools and building
-\item Scientific Workflows 
-\end{itemize}
-\item e4s-project.github.io/policies.html
-\item Supercontainers - containers on the compute platforms
-\begin{itemize}
-\item Shifter(Cori), singularity(lassen), charliecloud
-\item Looks like spack-based build/install can use CI on compute platforms
-\item 1. Spock and Articus
-\item 2. Make a spack recipe
-\item 3. Create smoke tests
-\item Support: a throat to choke
-\end{itemize}
-\end{itemize}
-\end{frame}
+%\begin{frame}\frametitle{Better Scientific Software}
+%\begin{itemize}
+%\item Improving productivity for users with computing workflows
+%\item Best practices - for developing and in distributed teams and environments
+%\item Software practices: Code will live longer than you think (plan now)
+%\begin{itemize}
+%\item Testing suites as stand-alone software suites
+%\item Test-driven development (TDD)
+%\item Actually test fault detection
+%\item Focus on exercising your code
+%\end{itemize}
+%\item Community guidelines for testing (in-general) needs to be developed:
+%\begin{itemize}
+%\item No testing is not enough
+%\item What is the risk of bugs creeping in?
+%\item How much time do you spend on defects?
+%\item How much compute time do you waste computing a spurious result?
+%\end{itemize}
+%\item With HPC risk level for defect is very high due to cost of runs
+%\item Restart tests are highly valuable
+%\item Code review is highly valuable (think pair coding similar in function, but cost 2x as high)
+%\item Testing as a part of the development is extremely important
+%\item Don't forget to test the tests, inject errors on purpose to see if the test catches
+%\item Small cycles is important - develop test commit test merge test
+%\item ECP CI is something to help us do CI on the HPC platforms?
+%\item Deep interest in performance tracking over time - no de-facto standard - so many different angles, so many things that impact performance
+%\item Interesting: Kitware has taken note, CDash providing native capability for tracking performance over time
+%\item Test vs. Develop vs. Get work done (testing tax - mostly imagined)
+%\end{itemize}
+%\end{frame}
+
+%\begin{frame}\frametitle{bof1}
+%\begin{itemize}
+%\item build caches of common stacks
+%\item OS updates underneath can be very costly
+%\item dependencies work to update is very high
+%\item Spack based (heavily)
+%\item Container based (heavily)
+%\item E4S is the preferred path to contributing to spack
+%\item ECP projects
+%\begin{itemize}
+%\item Vis and analysis
+%\item tools and building
+%\item Scientific Workflows 
+%\end{itemize}
+%\item e4s-project.github.io/policies.html
+%\item Supercontainers - containers on the compute platforms
+%\begin{itemize}
+%\item Shifter(Cori), singularity(lassen), charliecloud
+%\item Looks like spack-based build/install can use CI on compute platforms
+%\item 1. Spock and Articus
+%\item 2. Make a spack recipe
+%\item 3. Create smoke tests
+%\item Support: a throat to choke
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
 
 
-\begin{frame}\frametitle{bof2}
-How to set goals for software improvement?
-\begin{itemize}
-\item How to measure performance - what metrics
-\item performance/dollar
-\item performance/watt
-\item performance: run faster, don't care how much it costs
-\item threshold performance: what performance is required to get done in time
-\item relative performance: performance b / performance a
-\item IMportant to consider amount of science work done / walltime (accuracy of result inccluded) ECP uses this
-\item Identify Figure of Merit (FOM) - that characterizes your performance relative to your end/capstone goal
-\item FOM1: \# DOF x \# CG iters / time
-\item FOM2: fac1 * \# gp x fac2 * \# part x nsteps / time (facs function of grid push and particle push)
-\item Observing high overheads for kernel launch times
-\item Parting thoughts:
-\begin{itemize}
-\item No such thing as *just* porting - refactoring and reprogramming for performance on modern systems touches your code intimately - huge range of different changes
-\item Yay for ECP on making it very easy to go from existing CPU code to GPU
-\item Totally agree with Point1, disagree Point2 - emphasize teamwork - not a single developer issues - many discussions, many plans
-\end{itemize}
-\end{itemize}
-\end{frame}
+%\begin{frame}\frametitle{bof2}
+%How to set goals for software improvement?
+%\begin{itemize}
+%\item How to measure performance - what metrics
+%\item performance/dollar
+%\item performance/watt
+%\item performance: run faster, don't care how much it costs
+%\item threshold performance: what performance is required to get done in time
+%\item relative performance: performance b / performance a
+%\item IMportant to consider amount of science work done / walltime (accuracy of result inccluded) ECP uses this
+%\item Identify Figure of Merit (FOM) - that characterizes your performance relative to your end/capstone goal
+%\item FOM1: \# DOF x \# CG iters / time
+%\item FOM2: fac1 * \# gp x fac2 * \# part x nsteps / time (facs function of grid push and particle push)
+%\item Observing high overheads for kernel launch times
+%\item Parting thoughts:
+%\begin{itemize}
+%\item No such thing as *just* porting - refactoring and reprogramming for performance on modern systems touches your code intimately -% huge range of different changes
+%\item Yay for ECP on making it very easy to go from existing CPU code to GPU
+%\item Totally agree with Point1, disagree Point2 - emphasize teamwork - not a single developer issues - many discussions, many plans
+%\end{itemize}
+%\end{itemize}
+%\end{frame}
 % Shot session
 % Requirements and <blah> specified by tests is invaluable, highly useful for integration, portability, etc
 
-\begin{frame}\frametitle{Better software}
-\begin{itemize}
-\item What are your software pain points? (legacy code with no tests)
-  - Team turnover
-  - Resources to spend on better software (what if you had more funding, what would you spend it on?)
-  - Prioritizing science *with the code* over science *into the code* over attention to software process and improvements
-    - short time science vs. long-term science : spending on software process and improvements invests in long-term science
-  - Reproducibility is a big deal
-  - Incorporate these things into your software process, or your code is quickly irrelevant - quickly changing machines, etc
-\item What resources do you use to improve your software process?
-  - BSSW site
-  - Software resource management
-\item What would help with your SW development going forward?
-\item How could better SW practices reduce risk in your project?
-  - Transient developers (team changing in and out) remain useful
-\item How do you convince people to improve SW process?
-  - How do you convert dug-in skeptics? If you are the skeptic, what would convince you? 
-\end{itemize}
-\end{frame}
+%\begin{frame}\frametitle{Better software}
+%\begin{itemize}
+%\item What are your software pain points? (legacy code with no tests)
+%  - Team turnover
+%  - Resources to spend on better software (what if you had more funding, what would you spend it on?)
+%  - Prioritizing science *with the code* over science *into the code* over attention to software process and improvements
+%    - short time science vs. long-term science : spending on software process and improvements invests in long-term science
+%  - Reproducibility is a big deal
+%  - Incorporate these things into your software process, or your code is quickly irrelevant - quickly changing machines, etc
+%\item What resources do you use to improve your software process?
+%  - BSSW site
+%  - Software resource management
+%\item What would help with your SW development going forward?
+%\item How could better SW practices reduce risk in your project?
+%  - Transient developers (team changing in and out) remain useful
+%\item How do you convince people to improve SW process?
+%  - How do you convert dug-in skeptics? If you are the skeptic, what would convince you? 
+%\end{itemize}
+%\end{frame}
 
 % email watsongr@ornl.gov  about talking about scrum Greg Watson to talk about using Scrum and or other agile software process
 % DOE Code - for DOE-funded code, provides DOI for your source
