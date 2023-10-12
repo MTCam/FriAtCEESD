@@ -1,0 +1,6 @@
+# num_elements  order   avg_step_time*8_euler    avg_step_time*8_rk4
+7350 3 1.5 5.8
+13176 3 1.8 6.8
+29952 3 2.3 8.7
+71874 3 3.7 14.1
+114582 3 5.1 19.7

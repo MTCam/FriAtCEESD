@@ -1,0 +1,60 @@
+run_date: 2021-11-11 23:40
+run_host: 
+run_epoch: 1636702817
+run_platform: 
+run_arch: 
+gpu_arch: 
+order: 3
+scale: 1
+time_startup: 30.094266891479492
+time_first_step: 1351.3124272823334
+time_middle_8: 1.518812894821167
+---
+run_date: 2021-11-12 00:03
+run_host: 
+run_epoch: 1636704208
+run_platform: 
+run_arch: 
+gpu_arch: 
+order: 3
+scale: 2
+time_startup: 31.34332513809204
+time_first_step: 1348.5416917800903
+time_middle_8: 1.7956163883209229
+---
+run_date: 2021-11-12 00:26
+run_host: 
+run_epoch: 1636705610
+run_platform: 
+run_arch: 
+gpu_arch: 
+order: 3
+scale: 4
+time_startup: 36.72905898094177
+time_first_step: 1354.482260465622
+time_middle_8: 2.2589621543884277
+---
+run_date: 2021-11-12 00:50
+run_host: 
+run_epoch: 1636707041
+run_platform: 
+run_arch: 
+gpu_arch: 
+order: 3
+scale: 8
+time_startup: 49.52420377731323
+time_first_step: 1366.7350294589996
+time_middle_8: 3.6526572704315186
+---
+run_date: 2021-11-12 01:14
+run_host: 
+run_epoch: 1636708488
+run_platform: 
+run_arch: 
+gpu_arch: 
+order: 3
+scale: 12
+time_startup: 62.56814908981323
+time_first_step: 1367.9970605373383
+time_middle_8: 5.050009250640869
+---

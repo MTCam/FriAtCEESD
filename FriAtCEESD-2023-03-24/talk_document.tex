@@ -1,0 +1,187 @@
+\documentclass{beamer}
+
+\usepackage{listings,newtxtt}
+\input{ceesd-macros.tex}
+
+\begin{document}
+
+%\begin{frame}\frametitle{}
+%\vspace*{0.2in}
+%\centerline{\textrm{{\huge\bfseries\color{myOrange} Supporting Prediction Simulations}}}
+%\smallskip
+%\centerline{\textrm{{\small\bfseries\color{myOrange}Making sure \mirgecom{} is prediction-ready}}}
+%\centerline{\textrm{{\huge\bfseries\color{myOrange} Integration and Performance}}}
+%\smallskip
+%\smallskip
+%\centerline{\textrm{{\large\bfseries{Fr@CEESD - September 30, 2022}}}}
+%%\centerline{\textrm{{\big\bfseries\color{myOrange} Anatomy of a large scale prediction}}}
+%\vspace*{0.2in}
+%%\hrule
+%%\begin{center}
+%%\includegraphics[width=0.85\textwidth]{Figures/TitleFig.pdf}
+%%\end{center}
+%%\hrule
+%\begin{center}
+%\vspace*{0.4in}
+%\cPI{Mike Campbell \& CEESD}
+%\end{center}
+%\end{frame}
+
+\begin{frame}\frametitle{}
+\vspace*{0.2in}
+\centerline{\textrm{{\huge\bfseries\color{myOrange}\mirgecom{} Development}}}
+\smallskip
+\centerline{\textrm{{\small\bfseries\color{myOrange}Status and Next Steps}}}
+%\centerline{\textrm{{\small\bfseries\color{myOrange}be surprised by the state of \mirgecom{} at prediction-time}}}
+%\centerline{\textrm{{\huge\bfseries\color{myOrange} Integration and Performance}}}
+\smallskip
+\smallskip
+\centerline{\textrm{{\large\bfseries{Fr@CEESD - March 24, 2023}}}}
+%\centerline{\textrm{{\big\bfseries\color{myOrange} Anatomy of a large scale prediction}}}
+\vspace*{0.2in}
+%\hrule
+%\begin{center}
+%\includegraphics[width=0.85\textwidth]{Figures/TitleFig.pdf}
+%\end{center}
+%\hrule
+\begin{center}
+\vspace*{0.4in}
+\cPI{Mike Campbell \& CEESD}
+\end{center}
+\end{frame}
+
+%======================================================================
+\input{the_talk.tex}
+%======================================================================
+
+\begin{frame}\frametitle{}
+  \vspace*{0.2in}
+  
+\begin{center}
+\includegraphics[width=0.5\textwidth]{ceesd-logo-2.pdf}\\
+
+\vspace*{0.35in}
+\cPI{\huge Questions?}
+
+\vspace*{0.5in}
+\begin{minipage}{0.8\textwidth}
+This material is based in part upon work supported by the Department of Energy, National Nuclear Security Administration, under Award Number DE-NA0003963. 
+\end{minipage}
+\end{center}
+
+
+\end{frame}
+%======================================================================
+% --- extra slides ---
+
+% AK-sanctioned rip-off 
+\begin{frame}\frametitle{DG - The program}
+  \begin{multicols}{2}
+    \includegraphics[width=0.4\textwidth]{figures/pkdo-2d.png}
+    \vspace{-10pt}
+   \input{figures/unstructuredmesh.tex}
+    \begin{tikzpicture}[scale=0.4]
+      \meshnodes
+      \meshtris
+      \draw [fill=blue!30] (c) -- (n) -- (g) ;
+      \node [left=10mm of g,xshift=-2mm] (ellabel) {$E_k$};
+      \draw [thick,->,shorten >=2mm] (ellabel) -- (c) ;
+    \end{tikzpicture}
+    \vspace{-10pt}
+    \prj{\tiny}{Kl{\"o}ckner}\columnbreak \\
+    Numerical approximation to $\mathbf{Q}$, $\mathbf{S}$:
+    \begin{equation*}
+      \partial_t\mathbf{q}^{*} + \nabla \cdot \mathbf{F}(\mathbf{q}^{*}) - \mathbf{s}^{*} = 0
+    \end{equation*}
+    Hit with test function and integrate over element:
+    \begin{equation*}
+      \int_{E_k}[(\partial_t\mathbf{q}^{*} - \mathbf{s}^{*}) + (\nabla \cdot \mathbf{F}(\mathbf{q}^{*}))]\phi\,dx = 0
+    \end{equation*}
+  \end{multicols}
+  \begin{center}
+    Integrate by parts:
+    \begin{equation*}
+      \int_{E_k}(\partial_t\mathbf{q}^{*}- \mathbf{s}^{*})\phi\,dx -
+      \int_{E_k}(\mathbf{F}(\mathbf{q}^{*}) \cdot \nabla{\phi})\,dx +
+      \int_{\partial{E_k}}(\hat{n} \cdot \mathbf{F}(\mathbf{q}^{*}))\phi\,dx
+    \end{equation*}
+  \end{center}
+  \begin{center}
+    Rearranging in matrix form:
+    \begin{equation*}
+      \mathcal{M}[\partial_t\mathbf{q}^{*}] = \mathcal{M}[\mathbf{s}^{*}] + ( \mathcal{S}[\mathbf{F}(\mathbf{q}^{*})] )
+      - \sum{\mathcal{M}_{\partial{E_k}}[(\hat{\mathbf{n}} \cdot \mathbf{f}^{*})]} ) 
+    \end{equation*}
+  \end{center}
+\end{frame}
+
+
+\begin{frame}\frametitle{MIRGE Overview}
+\includegraphics[width=\textwidth]{figures/controllayerMIRGE-new.pdf}
+\end{frame}
+
+\begin{frame}\frametitle{Performance}
+\begin{center}
+Broader interpretation of performance involves the efficacy with which the modeling and simulation effort delivers meaningful results. Consider the total time to solution (TTS):\\
+\vspace{40pt}
+$\text{TTS} = T_\text{development} + T_\text{setup} + T_\text{simulation} + T_\text{analysis}$\\ 
+\vspace{20pt}
+$\text{Performance} = \frac{1}{\text{TTS}}$
+\end{center}
+\begin{tikzpicture}[remember picture, overlay]
+\fill <2> [fill=white, opacity=0.7] (current page.south west) + (0.5,0.5) rectangle (12.5, 7.8);
+  \node <2> [inner sep=0pt] at (current page.center) {
+    \includegraphics[width=.9\textwidth]{figures/workflow_timeline_1.png}
+   };
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{Performance}
+\begin{center}
+Broader interpretation of performance involves the efficacy with which the modeling and simulation effort delivers meaningful results. Consider the total time to solution (TTS):\\
+\vspace{40pt}
+$\text{TTS} = T_\text{development} + T_\text{setup} + T_\text{simulation} + T_\text{analysis}$\\ 
+\vspace{20pt}
+$\text{Performance} = \frac{1}{\text{TTS}}$
+\end{center}
+\begin{tikzpicture}[remember picture, overlay]
+\fill <2> [fill=white, opacity=0.7] (current page.south west) + (0.5,0.5) rectangle (12.5, 7.8);
+  \node <2> [inner sep=0pt] at (current page.center) {
+    \includegraphics[width=.9\textwidth]{figures/workflow_timeline_2.png}
+   };
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}\frametitle{Performance}
+\begin{center}
+Current status
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item Prediction-enabling performance (new this cycle)
+\begin{itemize}
+\item OOM: SVM/Unified memory
+\item Dag Splat: 1D partitioning
+\item Mem growth: Garbage collection
+\end{itemize}
+\item Scaling as expected (mostly)
+%\item Absolute performance could be better
+%\item Recent focus: memory growth
+\item Small problems are expensive
+\end{itemize}
+\end{multicols}
+\begin{center}
+Strong Scaling (fixed total work)\\
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item GPUs are strong-scaling-challenged
+\item 98k 3D, p=3 elements, Euler timestepping 
+\end{itemize}
+\columnbreak
+\includegraphics[width=.48\textwidth]{figures/comboz_strong2.png}
+\end{multicols}
+\end{frame}
+
+\end{document}

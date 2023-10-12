@@ -1,0 +1,238 @@
+\documentclass{beamer}
+
+\input{../ceesd-macros.tex}
+
+%======================================================================
+\makeatletter
+
+\tikzstyle{chart}=[
+    legend label/.style={font={\scriptsize},anchor=west,align=left},
+    legend box/.style={rectangle, draw, minimum size=5pt},
+    axis/.style={black,semithick,->},
+    axis label/.style={anchor=east,font={\tiny}},
+]
+
+\tikzstyle{pie chart}=[
+    chart,
+    slice/.style={line cap=round, line join=round, very thick,draw=white},
+    pie title/.style={font={\sffamily}},
+    slice type/.style 2 args={
+        ##1/.style={fill=##2},
+        values of ##1/.style={}
+    }
+]
+
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\newcommand{\pie}[3][]{
+  \begin{scope}[#1]
+    \pgfmathsetmacro{\curA}{90}
+    \pgfmathsetmacro{\r}{1}
+    \def\c{(0,0)}
+    \node[pie title] at (90:1.3) {#2};
+    \foreach \v/\s in{#3}{
+      \pgfmathsetmacro{\deltaA}{\v/100*360}
+      \pgfmathsetmacro{\nextA}{\curA + \deltaA}
+      \pgfmathsetmacro{\midA}{(\curA+\nextA)/2}%2}
+
+      \path[slice,\s] \c
+      -- +(\curA:\r)
+      arc (\curA:\nextA:\r)
+      -- cycle;
+      \pgfmathsetmacro{\d}{max((\deltaA * -(.5/50) + 1) , .5)}
+
+      \begin{pgfonlayer}{foreground}
+        \path \c -- node[pos=\d,pie values,values of \s]{$\v\%$} +(\midA:\r);
+      \end{pgfonlayer}
+
+      \global\let\curA\nextA
+    }
+  \end{scope}
+}
+
+\newcommand{\pielegend}[2][]{
+  \begin{scope}[#1]
+    \path
+    \foreach \n/\s in {#2}{
+               ++(0,-10pt) node[\s,legend box,draw=none] {} +(5pt,0) node[legend label] {\n}};
+  \end{scope}
+}
+%======================================================================
+
+\begin{document}
+
+%======================================================================
+\begin{frame}\frametitle{Pyrometheus}
+
+  \begin{itemize}
+  \item Need code to compute chemical source terms   
+  \item Libraries (e.g., Cantera) can provide, but slow down computation
+  \item \textcolor{myOrange}{\textit{Pyrometheus}}: Automated thermochemistry-code generation
+    \begin{itemize}
+    \item Name selected by CEESD vote
+      \begin{center}
+
+        \begin{tikzpicture}
+          [
+            pie chart,
+            slice type={Pyrometheus}{myOrange},
+            slice type={PyPrometheus}{myBlue},
+            pie values/.style={font={\small}},            
+            scale=0.8
+          ]
+
+          \pie[values of Pyrometheus/.style={font=\sffamily, color=white}, values of PyPrometheus/.style={pos=1.25}]{}{85.7/Pyrometheus, 14.3/PyPrometheus}
+          
+          \pielegend[shift={(1.5cm,0cm)}]{{\color{myOrange}Pyrometheus}/Pyrometheus, {\color{myBlue}PyPrometheus}/PyPrometheus}
+
+        \end{tikzpicture}
+        
+      \end{center}
+    \end{itemize}
+  \end{itemize}
+
+  \begin{itemize}
+  \item Code generation: established approach${}^{1,2}$, but \textit{Pyrometheus} has two advantages
+    \begin{itemize}
+    \item Based on a code template, reflecting equations of chemical kinetics
+    \item Compatible with automatic differentiation (AD) for Jacobians\\
+      $\Rightarrow$ only need to implement source terms, no derivatives
+    \end{itemize}
+  \item \textbf{ACT II simulations}: faster with generated code than Cantera by factor of $1.7$
+  \end{itemize}
+
+  \tiny{${}^{1}$\sPI{Bisetti,} \textit{Combust. Theory \& Model.} (2012)} \\
+  \tiny{${}^{2}$\sPI{Neimeyer et al.,} \textit{Comput. Phys. Commun} (2017)} \\
+  
+\end{frame}
+%======================================================================
+
+%======================================================================
+\begin{frame}\frametitle{Chemical Kinetics}
+
+  \footnotesize
+  \textcolor{myOrange}{\textbf{\textrm{Reaction Mechanism}}}:
+  \begin{equation*}
+    \sum_{\ell = 1}^{N}\nu_{\ell j}^{\prime}\mathcal{S}_{\ell} \rightleftharpoons \sum_{k = 1}^{N}\nu_{k j}^{\prime\prime}\mathcal{S}_{k},\qquad j = 1,\dots,M,
+  \end{equation*}
+  $\nu_{ij}^{\prime},\,\nu_{ij}^{\prime\prime}$: Stoichiometric coefficient of species $\mathcal{S}_{i}$ in $j^{\mathrm{th}}$ reaction\\
+  $T,\, \{ C_{i} \}_{i = 1}^{N},\,\mathscr{R}$: temperature, and species concentrations, univ. gas constant
+
+  \vspace{-10pt}
+  \begin{columns}
+    \begin{column}{.5\textwidth}
+
+      \vspace{-180pt}
+      \scriptsize\begin{empheq}[box=\colorbox{IllinoisOrange!10}]{alignat=1}
+      &\textbf{Source term: }\nonumber\\
+      &\dot{\omega}_{i} = \sum_{j = 1}^{M}(\nu_{ij}^{\prime\prime} - \nu_{ij}^{\prime})R_{j},\,\, i = 1,\dots,N \nonumber\\
+      &\text{Reaction rates: }\nonumber\\
+      &R_{j} = k_{j}(T)\psq{ \prod_{m = 1}^{N}C_{m}^{\nu_{mj}^{\prime}} - \frac{1}{K_{j}(T)}\prod_{n = 1}^{N}C_{n}^{\nu_{nj}^{\prime\prime}}  } \nonumber\\
+      &\text{Rate coefficients e.g., Arrhenius: }\nonumber\\
+      &k_{j}(T) = A_{j} T^{b_{j}}\exp\pp{ -\frac{E_{a,j}}{RT} } \nonumber    
+      \end{empheq}\normalsize
+      
+    \end{column}
+    \begin{column}{.5\textwidth}
+
+      \scriptsize\begin{empheq}[box=\colorbox{IllinoisOrange!10}]{alignat=1}
+      &\text{Equilibrium constants: }\nonumber\\
+      &K_{j}(T) = \exp\psq{ -\sum_{i = 1}^{N} \frac{(\nu_{ij}^{\prime\prime} - \nu_{ij}^{\prime})\hat{g}_{i}^{0}(T)}{\mathscr{R}T} } \nonumber\\
+      &\text{Gibbs functions: }\\
+      &\hat{g}_{i}^{0} = \hat{h}_{i}(T) - T\,\hat{s}_{i}^{0}(T)\nonumber\\   
+      &\text{Species enthalpies \& entropies (NASA Poly): }\nonumber\\
+      &\frac{\hat{h}_{i}}{\mathscr{R}T} = \frac{\alpha_{h}}{T} + \sum_{m = 1}^{5}\frac{\alpha_{m}}{m}T^{m-1}\nonumber\\
+      &\frac{\hat{s}_{i}^{0}}{\mathscr{R}} = \alpha_{s} + \alpha_{h}\log\,T + \sum_{m = 2}^{5}\frac{\alpha_{m}}{m-1}T^{m}\nonumber
+      \end{empheq}\normalsize
+
+    \end{column}
+  \end{columns}
+
+  \normalsize
+  
+\end{frame}
+%======================================================================
+
+%======================================================================
+\begin{frame}\frametitle{Verification}
+
+  \begin{overprint}
+    \onslide<1>
+    \begin{itemize}
+    \item Verify against Cantera (itself tested upon installation)
+    \item Illustration: 32-species ethylene mechanism \tiny{\sPI{Luo et al.,,} \textit{Combust. Flame} (2012)}\normalsize
+    \item Full verification suite provided with distribution
+    \end{itemize}
+    
+    \textcolor{myOrange}{\underline{\textbf{\textrm{Species Thermo}}}}:
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[scale=0.7,page=1]{Figures/pdf/fig_pyro_thermo_poly_verif.pdf}
+      \end{center}
+    \end{figure}
+
+    \onslide<2>
+    \begin{itemize}
+    \item Verify against Cantera (itself tested upon installation)
+    \item Illustration: 32-species ethylene mechanism \tiny{\sPI{Luo et al.,,} \textit{Combust. Flame} (2012)}\normalsize
+    \item Full verification suite provided with distribution
+    \end{itemize}
+    
+    \textcolor{myOrange}{\underline{\textbf{\textrm{Kinetics}}}}:
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[scale=0.7,page=1]{Figures/pdf/fig_pyro_rate_coeffs_temp_verif.pdf}
+      \end{center}
+    \end{figure}
+
+    \onslide<3>
+    \begin{itemize}
+    \item Verify against Cantera (itself tested upon installation)
+    \item Illustration: 32-species ethylene mechanism \tiny{\sPI{Luo et al.,,} \textit{Combust. Flame} (2012)}\normalsize
+    \item Full verification suite provided with distribution
+    \end{itemize}
+
+    \textcolor{myOrange}{\underline{\textbf{\textrm{Kinetics}}}}:
+    \begin{figure}[H]
+      \begin{center}
+        \includegraphics[scale=0.7,page=1]{Figures/pdf/fig_pyro_production_rates_verif.pdf}
+      \end{center}
+    \end{figure}
+
+  \end{overprint}
+  
+\end{frame}
+%======================================================================
+
+%======================================================================
+\begin{frame}\frametitle{Summary \& Discussion}
+
+  \begin{itemize}
+  \item Package for thermochemistry-code generation
+    \begin{itemize}
+    \item Uses Cantera to handle mechanism parameterization, and for verification
+    \item Based on \textbf{code template}, \textbf{automatic diff.} $\rightarrow$ facilitate extensions
+    \end{itemize}
+  \item Freely-available: \url{https://github.com/ecisneros8/pyrometheus}
+  \end{itemize}
+
+  \begin{itemize}
+  \item Applications:
+    \begin{itemize}
+    \item Reacting-flow simulations: \textit{PlasCom2}, \textit{MirgeCOM}
+    \item Mechanism design
+    \item Chemical model reduction and uncertainty quantification\\
+      \tiny{\sPI{Cisneros--Garibay, Pantano \& Freund,} \textit{Combust. Flame} (2019)}
+    \end{itemize}
+  \end{itemize}
+
+  \begin{itemize}
+  \item \textbf{ACT II simulations}: faster with generated code than Cantera by factor of $1.7$
+  \end{itemize}
+  
+\end{frame}
+%======================================================================
+
+\end{document}

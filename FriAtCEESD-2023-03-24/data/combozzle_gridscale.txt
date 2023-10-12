@@ -1,0 +1,6 @@
+# num_elements  order   avg_step_time*8_eager    avg_step_time*8_lazy
+7350 1 79.1
+13176 1 79.9
+29952 1 80.6
+71874 1 82.3
+114582 1 84.6

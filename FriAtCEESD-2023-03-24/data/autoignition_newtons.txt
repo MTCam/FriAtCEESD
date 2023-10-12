@@ -1,0 +1,5 @@
+# niter eager_lassen lazy_lassen  eager_mac lazy_mac
+2 2.5 4.3
+5 4.9 7.7
+10 8.8 14.9
+20 16.7 26.5
