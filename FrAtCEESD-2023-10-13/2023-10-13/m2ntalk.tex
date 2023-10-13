@@ -25,7 +25,7 @@
   \begin{itemize}
     \item MIRGE-Com Overview
     \item Performance \& Scalability
-    \item Recent Challenges
+    \item Code Challenges
     %    \begin{itemize}
     %        \item Partitioning \& DAG Splat Issues
     %        \item Mesh Processing Complexities (dont forget about enhanced instrumentation)
@@ -181,7 +181,7 @@
 \begin{frame}
     \centering
     \Large
-    Performance \& Scalability
+    \textbf{Performance \& Scalability}
     % Fundamentals
     % \begin{itemize}
     %    \item Strong Scaling: Fixed problem size, scaling resource
@@ -342,7 +342,7 @@ New: prediction-enabling performance
     \begin{column}{0.5\textwidth}
       % Top left: Text
       \begin{itemize}
-        \item Weak scaling: 24k $p4$ per GPU
+        \item Weak scaling: 24k $p=4$ per GPU
         \item Fluid: NS-only, 2 species
         \item AV: Fluid + Artificial Viscosity
         \item AVMix: AV + 7 species mixture EOS
@@ -447,11 +447,7 @@ https://github.com/illinois-ceesd/timing
   \includegraphics[width=.8\textwidth]{Figures/mtc/y3-prediction-parallel-20230405.pdf}
 \end{center}
 \end{frame}
-\begin{frame}\frametitle{Recent Y3 Monitoring on Lassen}
-\begin{center}
-  \includegraphics[width=.7\textwidth]{Figures/y3-epoch-2023-10-13.pdf}
-\end{center}
-\end{frame}
+
 \begin{frame}
     \centering
     \Large
@@ -474,6 +470,450 @@ https://github.com/illinois-ceesd/timing
 \end{itemize}
 \item M-to-N restart: needed for simulation portability (now working for prediction)
 \end{itemize}
+\end{frame}
+
+
+\begin{frame}\frametitle{M-to-N Restarts - Single Volume}
+\begin{tikzpicture}[scale=0.3]
+    \begin{scope}
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts - Single Volume}
+\begin{tikzpicture}[scale=0.3]
+    \begin{scope}
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    \end{scope}
+
+    \begin{scope}[xshift=35cm]
+    % Partition 0
+    \draw[step=1, thin, black] (0,0) grid (4,10);
+    \draw[thick] (0,0) rectangle (4,10);
+    \node[font=\bfseries, blue] at (2,9) {0};
+    
+    % Partition 1
+    \begin{scope}[xshift=4.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \node[font=\bfseries, blue] at (2,9) {1};
+    \end{scope}
+    
+    % Partition 2 with blue and red subregions
+    \begin{scope}[xshift=9cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        % \foreach \j in {0, 1, 2} {
+        %    \fill[blue] (1.5, \j+0.5) circle (4pt);
+        %    \fill[blue] (2.5, \j+0.5) circle (4pt);
+        %    \fill[red] (3.5, \j+0.5) circle (4pt);
+        %}
+        \node[font=\bfseries, blue] at (2,9) {2};
+    \end{scope}
+    
+    % Partition 3 with red subregion
+    \begin{scope}[xshift=13.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        %\foreach \j in {0, 1, 2} {
+        %    \fill[red] (0.5, \j+0.5) circle (4pt);
+        %    \fill[red] (1.5, \j+0.5) circle (4pt);
+        %    \fill[red] (2.5, \j+0.5) circle (4pt);
+        %    \fill[red] (3.5, \j+0.5) circle (4pt);
+        %}
+        \node[font=\bfseries, blue] at (2,9) {3};
+    \end{scope}
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+
+    % Partition lines and labels for 3 partitions
+    \draw[thick, blue] (5,0) -- (5,10);
+    \draw[thick, blue] (10,0) -- (10,10);
+    
+    \node at (2.66,9) {0};
+    \node at (7.99,9) {1};
+    \node at (13.33,9) {2};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+
+    % Partition lines and labels
+    \draw[thick, blue] (4,0) -- (4,10);
+    \draw[thick, blue] (8,0) -- (8,10);
+    \draw[thick, blue] (12,0) -- (12,10);
+
+    \node at (2,9) {0};
+    \node at (6,9) {1};
+    \node at (10,9) {2};
+    \node at (14,9) {3};
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+
+    % Partition lines and labels for 4 partitions (in blue)
+    \draw[thick, blue] (4,0) -- (4,10);
+    \draw[thick, blue] (8,0) -- (8,10);
+    \draw[thick, blue] (12,0) -- (12,10);
+    
+    \node[font=\bfseries, blue] at (2,9) {0};
+    \node[font=\bfseries, blue] at (6,9) {1};
+    \node[font=\bfseries, blue] at (10,9) {2};
+    \node[font=\bfseries, blue] at (14,9) {3};
+
+    % Partition lines for 3 partitions (in orange)
+    \draw[thick, orange] (5,0) -- (5,10);
+    \draw[thick, orange] (10,0) -- (10,10);
+    
+    \node[font=\bfseries, orange] at (2.5,8) {0};
+    \node[font=\bfseries, orange] at (7.5,8) {1};
+    \node[font=\bfseries, orange] at (13,8) {2};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition 0
+    \draw[step=1, thin, black] (0,0) grid (4,10);
+    \draw[thick] (0,0) rectangle (4,10);
+    \node[font=\bfseries, blue] at (2,9) {0};
+    
+    % Partition 1
+    \begin{scope}[xshift=4.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \node[font=\bfseries, blue] at (2,9) {1};
+    \end{scope}
+    
+    % Partition 2 with blue and red subregions
+    \begin{scope}[xshift=9cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (1.5, \j+0.5) circle (4pt);
+            \fill[blue] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (2,9) {2};
+    \end{scope}
+    
+    % Partition 3 with red subregion
+    \begin{scope}[xshift=13.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);  % added this line for the last column of red dots in partition 3
+        }
+        \node[font=\bfseries, blue] at (2,9) {3};
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition 0
+    \draw[step=1, thin, black] (0,0) grid (5,10);
+    \draw[thick] (0,0) rectangle (5,10);
+    \node[font=\bfseries, orange] at (2.5,9) {0};
+    
+    % Partition 1 with blue subregion
+    \begin{scope}[xshift=5.5cm]
+        \draw[step=1, thin, black] (0,0) grid (5,10);
+        \draw[thick] (0,0) rectangle (5,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (3.5, \j+0.5) circle (4pt);
+            \fill[blue] (4.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (2.5,9) {1};
+    \end{scope}
+    
+    % Partition 2 with red subregion
+    \begin{scope}[xshift=11cm]
+        \draw[step=1, thin, black] (0,0) grid (6,10);
+        \draw[thick] (0,0) rectangle (6,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+            \fill[red] (4.5, \j+0.5) circle (4pt);
+            \fill[red] (5.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (3,9) {2};
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Grid without Border on Cutout}
+%\begin{tikzpicture}[scale=0.3]
+%
+%    % Draw only the visible cells
+%    \foreach \i in {0,1,2,3} {
+%        \foreach \j in {3,4,...,9} {
+%            \draw (\i,\j) rectangle (\i+1,\j+1);
+%        }
+%    }
+%    \draw (0,0) rectangle (1,3);
+%    \draw (0,0) rectangle (1,1);
+%    \draw (0,1) rectangle (1,2);
+%    \draw (0,2) rectangle (1,3);
+%
+%    % Adjusted border
+%    \draw[thick] (0,0) -- (1,0) -- (1,3) -- (4,3) -- (4,10) -- (0,10) -- cycle;
+%
+%\end{tikzpicture}
+%\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition (0,0)
+    \draw[step=1, thin, black] (0,0) grid (4,10);
+    \draw[thick] (0,0) rectangle (4,10);
+    \node[font=\bfseries, blue] at (2,9) {(0,0)};
+
+    % Partition (1,0)
+    \begin{scope}[xshift=4.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \node[font=\bfseries, blue] at (2,9) {(1,0)};
+    \end{scope}
+
+    % Partition (2,0) with the correct shape and border
+    \begin{scope}[xshift=9cm]
+        \foreach \i in {0,1,2,3} {
+            \foreach \j in {3,4,...,9} {
+                \draw (\i,\j) rectangle (\i+1,\j+1);
+            }
+        }
+        \draw (0,0) rectangle (1,3);
+        \draw (0,0) rectangle (1,1);
+v        \draw (0,1) rectangle (1,2);
+        \draw (0,2) rectangle (1,3);
+        \draw[thick] (0,0) -- (1,0) -- (1,3) -- (4,3) -- (4,10) -- (0,10) -- cycle;
+        \node[font=\bfseries, blue] at (2,9) {(2,0)};
+    \end{scope}
+
+    % Partition (2,1) with blue subregion, adjusted position
+    \begin{scope}[xshift=13.5cm, yshift=6cm]
+        \draw[step=1, thin, black] (0,0) grid (2,4);
+        \draw[thick] (0,0) rectangle (2,4);
+        \foreach \j in {0,1,2,3} {
+            \fill[blue] (0.5, \j+0.5) circle (4pt);
+            \fill[blue] (1.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (1,3) {(2,1)};
+    \end{scope}
+
+    % Partition (2,2) with red subregion, adjusted position
+    \begin{scope}[xshift=13.5cm, yshift=2cm]
+        \draw[step=1, thin, black] (0,0) grid (1,3);
+        \draw[thick] (0,0) rectangle (1,3);
+        \foreach \j in {0,1,2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (0.5,2) {(2,2)};
+    \end{scope}
+
+    % Partition (3,0), adjusted position and dimensions
+    \begin{scope}[xshift=16cm, yshift=3.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,7);
+        \draw[thick] (0,0) rectangle (4,7);
+        \node[font=\bfseries, blue] at (2,6) {(3,0)};
+    \end{scope}
+
+    % Partition (3,2) with red subregion, adjusted position
+    \begin{scope}[xshift=16cm, yshift=-0.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,3);
+        \draw[thick] (0,0) rectangle (4,3);
+        \foreach \j in {0,1,2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (2,2) {(3,2)};
+    \end{scope}
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition (0,0)
+    \draw[step=1, thin, black] (0,0) grid (5,10);
+    \draw[thick] (0,0) rectangle (5,10);
+    \node[font=\bfseries, orange] at (2.5,9) {(0,0)};
+
+    % Partition (1,0) with the correct shape, border, and panhandle grid
+    \begin{scope}[xshift=5.5cm]
+        \foreach \i in {0,1,2,3,4} {
+            \foreach \j in {3,4,...,9} {
+                \draw (\i,\j) rectangle (\i+1,\j+1);
+            }
+        }
+        \foreach \i in {0,1,2} {
+            \foreach \j in {0,1,2} {
+                \draw (\i,\j) rectangle (\i+1,\j+1);
+            }
+        }
+        \draw[thick] (0,0) -- (3,0) -- (3,3) -- (5,3) -- (5,10) -- (0,10) -- cycle;
+        \node[font=\bfseries, orange] at (2.5,9) {(1,0)};
+    \end{scope}
+
+    % Partition (1,1) with blue subregion, further adjusted position
+    \begin{scope}[xshift=9cm, yshift=-0.5cm]
+        \draw[step=1, thin, black] (0,0) grid (2,3);
+        \draw[thick] (0,0) rectangle (2,3);
+        \foreach \j in {0,1,2} {
+            \fill[blue] (0.5, \j+0.5) circle (4pt);
+            \fill[blue] (1.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (1,2) {(1,1)};
+    \end{scope}
+
+    % Partition (2,0)
+    \begin{scope}[xshift=12cm, yshift=3cm]
+        \draw[step=1, thin, black] (0,0) grid (6,7);
+        \draw[thick] (0,0) rectangle (6,7);
+        \node[font=\bfseries, orange] at (3,6) {(2,0)};
+    \end{scope}
+
+    % Partition (2,2) with red subregion
+    \begin{scope}[xshift=12cm, yshift=-0.5cm]
+        \draw[step=1, thin, black] (0,0) grid (6,3);
+        \draw[thick] (0,0) rectangle (6,3);
+        \foreach \j in {0,1,2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+            \fill[red] (4.5, \j+0.5) circle (4pt);
+            \fill[red] (5.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (3,2) {(2,2)};
+    \end{scope}
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+
+\begin{tikzpicture}[scale=0.3]
+    % ... [rest of your existing TikZ picture]
+
+    % Legend Box
+    \begin{scope}[xshift=20cm, yshift=8cm]
+        \draw[thick] (-1,0.5) rectangle (6,-3); % Adjusted the top border of the box
+        
+        \fill[blue] (0,-0.5) circle (6pt); % Blue dot
+        \node[align=left] at (3,-0.5) {Volume 0}; % Moved the label to the right
+        
+        \fill[red] (0,-2) circle (6pt);  % Red dot
+        \node[align=left] at (3,-2) {Volume 1}; % Moved the label to the right
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
 \end{frame}
 
 \begin{frame}
