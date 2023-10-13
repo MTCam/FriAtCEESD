@@ -1,0 +1,995 @@
+% LukeO rip-off
+\tikzstyle{c_mirgecom}   = []
+\tikzstyle{c_meshmode}   = []
+\tikzstyle{c_grudge}     = []
+\tikzstyle{c_loopy}      = []
+\tikzstyle{c_pytato}     = []
+\tikzstyle{c_pyopencl}   = []
+\tikzstyle{c_modepy}     = []
+\tikzstyle{c_pymbolic}   = []
+\tikzstyle{c_pocl}       = []
+\tikzstyle{c_arraycontext} = []
+\newcommand{\softwaredeps}{
+  \tikzstyle{every path} = [line width=0.3pt,black!70]
+  \tikzstyle{every node} = [scale=1.5,IllinoisBlue, line width=1pt]
+  \begin{tikzpicture}[>=latex',line join=bevel,scale=0.34,
+                      transform shape]
+      \input{./Figures/software-all.tikz}
+  \end{tikzpicture}
+}
+%\newcommand{\softwaredeps}{
+%  \input{./Figures/software.tikz}
+%}
+\begin{frame}\frametitle{Outline}
+\begin{minipage}[T]{0.45\textwidth}
+  \begin{itemize}
+    \item \textbf{MIRGE-Com Overview}
+    \item \textbf{Performance \& Scalability}
+    \item \textbf{Code Challenges}
+    %    \begin{itemize}
+    %        \item Partitioning \& DAG Splat Issues
+    %        \item Mesh Processing Complexities
+    %        \item DAG Complexity with physics development/capabilities
+    %        \item Upcoming Threats \& Concerns
+    %    \end{itemize}
+    %  \end{itemize}
+    \item \textbf{Conclusion \& Future Directions}
+    %\begin{itemize}
+    %    \item Upcoming Review Priorities
+    %    \item Vision \& Long-Term Goals
+    %\end{itemize}
+  \end{itemize}
+\end{minipage}
+\hfill
+\begin{minipage}[T]{0.45\textwidth}
+  \centering
+  \tikzstyle{c_mirgecom}=[draw=myOrange, line width=0.5mm]
+  \softwaredeps%
+\end{minipage}
+  \url{https://github.com/illinois-ceesd/mirgecom/}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \Large
+    \textbf{MIRGE-Com in Y3}
+    % \begin{itemize}
+    %    \item Architecture Overview
+    %    \item Supported Features, Physics
+    %    \item Development Overview (production eliminiation)
+    % \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Architecture Overview}
+  \begin{center}
+  \includegraphics[width=.95\textwidth]{Figures/controllayer-new.pdf}
+  % \vspace*{-5pt}
+  \end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Simulation Infrastructure}
+\begin{multicols}{2}
+\begin{itemize}
+\item Infrastructure provides:
+  \begin{itemize}
+  \item DG operators (e.g., mass, stiffness, grad, div)% , ($\mathcal{S}$)
+  \item Multiple parallel discrete geometries \prj{\tiny}{M.~Smith}
+   % and other machinery, spectral domain access, etc, interior\_trace\_pair - selects all interior faces
+  \item Compute device access
+  \item Symbolic infrastructure - great for verification
+  \end{itemize}
+\end{itemize}
+\columnbreak
+\begin{itemize}
+\item \textit{MIRGE-Com} library provides:
+  \begin{itemize}
+  \item Conservation-law-specific data structures
+  \item Simulation / driver API
+  \item Prediction-relevant
+    \begin{itemize}
+    \item RHS operators
+    \item Model-specific constructs (e.g., EOS, transport, reactions)
+    \item Boundary and numerical fluxes
+    \end{itemize}
+  \end{itemize}
+\end{itemize}
+\end{multicols}
+\vspace{-10pt}
+\lstinputlisting[style=kkcodestyle, basicstyle=\tiny, language=Python]{Figures/mtc/rhs_sample.py}
+%\begin{multicols}{2}
+%  \lstinputlisting[style=kkcodestyle, basicstyle=\tiny, language=Python]{Figures/mtc/rhs_sample2.py}
+%\columnbreak
+%  \lstinputlisting[style=kkcodestyle, basicstyle=\tiny, language=Python]{Figures/mtc/rhs_sample3.py}
+%\end{multicols}
+\end{frame}
+
+
+
+\begin{frame}\frametitle{Prediction-supporting Development}
+  \begin{center}
+  \includegraphics[width=.65\textwidth]{Figures/mtc/PredictionSupportinDevel3.pdf}
+  \vspace*{-5pt}
+  \end{center}
+  \begin{center}
+  % \vspace*{-15pt}
+  \begin{itemize}
+  \item Prediction-supporting development process
+  \item Prediction-targeted testing mechanism
+  \item Continuous integration and daily ASC platform testing
+  \end{itemize}
+  \end{center}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill <2> [fill=white, opacity=0.8] (current page.south west) + (0.5,0.5) rectangle (12.5,7.5);
+    \node <2> [inner sep=0pt] at (current page.center) {
+      \includegraphics[width=.9\textwidth]{Figures/mtc/coverage_plot_production.pdf}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}\frametitle{Prediction-supporting Development}
+  \begin{center}
+  \includegraphics[width=.65\textwidth]{Figures/mtc/PredictionSupportinDevel3.pdf}
+  \vspace*{-5pt}
+  \end{center}
+  \begin{center}
+  % \vspace*{-15pt}
+  \begin{itemize}
+  \item Prediction-supporting development process
+  \item Prediction-targeted testing mechanism
+  \item Continuous integration and daily ASC platform testing
+  \end{itemize}
+  \end{center}
+  \begin{tikzpicture}[remember picture, overlay]
+    \fill <2> [fill=white, opacity=0.8] (current page.south west) + (0.5,0.5) rectangle (12.5,7.5);
+    \node <2> [inner sep=0pt] at (current page.center) {
+      \includegraphics[width=.9\textwidth]{Figures/mtc/coverage_plot_main.pdf}
+    };
+  \end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{Prediction-supporting Development}
+  \begin{center}
+  \includegraphics[width=.65\textwidth]{Figures/mtc/PredictionSupportinDevel3.pdf}
+  \vspace*{-5pt}
+  \end{center}
+  \begin{center}
+  % \vspace*{-15pt}
+  \begin{itemize}
+  \item Prediction-supporting development process
+  \item Prediction-targeted testing mechanism
+  \item Continuous integration and daily ASC platform testing
+  \end{itemize}
+  \end{center}
+\end{frame}
+
+%\begin{frame}\frametitle{Thermochemistry Verification in \mirgecom}
+%\begin{center}
+% Autoignition co-verification
+%\end{center}
+%\begin{itemize}
+%   \item Ethylene/air mixture $(1500\mathtt{K}, \rho=\mathtt{const})$
+%   \item \pyrometheus-predicted profiles match \textit{Cantera}
+%   \item \pyrometheus{} with implicit time integration with \textit{CVODE}
+%   \item \mirgecom{} with RK4, inviscid, quiescent
+%\end{itemize}
+%\begin{multicols}{2}
+%    \includegraphics[width=.4\textwidth]{Figures/mtc/autoignition_rates.pdf}\\
+%    \columnbreak
+%    \includegraphics[width=.4\textwidth]{Figures/mtc/autoignition_temperature.pdf}
+%  \end{multicols}
+%\end{frame}
+
+\begin{frame}
+    \centering
+    \Large
+    \textbf{Performance \& Scalability}
+    % Fundamentals
+    % \begin{itemize}
+    %    \item Strong Scaling: Fixed problem size, scaling resource
+    %    \item Weak Scaling: Scaled problem size, fixed work/resource
+    %    \item Versatility: Portability, resource options
+    %\end{itemize}
+    % MIRGE-Com scaling in Y3
+    % \item \textbf{MIRGE-Com Scaling in Y3}
+    % \begin{itemize}
+    %    \item Why do we care?  (Enabling prediction!)
+    %    \item Performance Snapshots
+    %    \begin{itemize}
+    %        \item Weak Scaling Achievements
+    %        \item Strong Scaling Insights
+    %        \item Lassen Monitoring Highlights
+    %    \end{itemize}
+\end{frame}
+
+\begin{frame}\frametitle{Performance}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\begin{center}
+New: prediction-enabling performance
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item Scaling as expected (mostly)
+\item Small problems are expensive
+\columnbreak
+\item OOM: SVM/Unified memory \prj\tiny{07c, M.~Diener}
+\item Mem growth: Garbage collection
+\end{itemize}
+%\item Absolute performance could be better
+%\item Recent focus: memory growth
+%\end{itemize}
+\end{multicols}
+\end{minipage}\vfill
+\vspace{-20pt}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\centering
+%Grid Scaling\\
+%\end{center}
+%\begin{center}
+\includegraphics[width=.4\textwidth]{Figures/mtc/combozzle_gridscale.pdf}\hspace{30pt}
+\includegraphics[width=.4\textwidth]{Figures/mtc/comboz_gridscale_svm.png}
+\end{minipage}
+\end{frame}
+
+
+\begin{frame}\frametitle{Performance}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\begin{center}
+New: prediction-enabling performance
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item DAG Splat: DAG for each boundary
+\item Limits weak scaling - DAG for each neighbor
+\columnbreak
+\item Mitigation: Metis $\to$ 1D decomp
+\item Real fix: Function calls in the DAG \prj\tiny{Kaushik Kulkarni}
+\end{itemize}
+\end{multicols}
+\end{minipage}\vfill
+\vspace{-20pt}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\centering
+\includegraphics[width=.4\textwidth]{Figures/mtc/combozzle_weak_bad_partitioning.png}\hspace{30pt}
+\includegraphics[width=.4\textwidth]{Figures/mtc/combozzle_weak_sliced_partitioning.png}
+\end{minipage}
+\end{frame}
+
+\begin{frame}\frametitle{Performance}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\begin{center}
+New: prediction-enabling performance
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item DAG Splat: DAG for each boundary
+\item Limits weak scaling - DAG for each neighbor
+\columnbreak
+\item Mitigation: Metis $\to$ 1D decomp
+\item Real fix: Function calls in the DAG \prj\tiny{Kaushik Kulkarni}
+\end{itemize}
+\end{multicols}
+\end{minipage}\vfill
+%\vspace{-100pt}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\centering
+%\includegraphics[width=.9\textwidth]{Figures/mtc/1dpart_bal.png}\\
+\includegraphics[width=.9\textwidth]{Figures/mtc/1dpartshiny.png}\\
+%\vspace{-50pt}
+\begin{center}
+Y2 Domain Decomposition
+\end{center}
+\end{minipage}
+\end{frame}
+
+\begin{frame}\frametitle{Performance}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\begin{center}
+New: prediction-enabling performance
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item DAG Splat: DAG for each boundary
+\item Limits weak scaling - DAG for each neighbor
+\columnbreak
+\item Mitigation: Metis vs. 1D decomp
+\item Real fix: Function calls in the DAG \prj\tiny{Kaushik Kulkarni}
+\end{itemize}
+\end{multicols}
+\end{minipage}\vfill
+\vspace{-20pt}
+\begin{minipage}[t][0.4\textheight][t]{\textwidth}
+\centering
+%\includegraphics[width=.48\textwidth]{Figures/mtc/y2ks3d_weak.png}
+\includegraphics[width=.48\textwidth]{Figures/mtc/y2-prediction_weak_scaling.pdf}
+\includegraphics[width=.48\textwidth]{Figures/mtc/y3-prediction_weak_scaling.pdf}
+\end{minipage}
+\end{frame}
+
+\begin{frame}\frametitle{Performance Monitoring on Lassen}
+\begin{center}
+https://github.com/illinois-ceesd/timing\\
+\includegraphics[width=.6\textwidth]{Figures/mtc/nozzle-lazy-full.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Performance Monitoring on Lassen}
+\begin{minipage}[t][0.3\textheight][t]{\textwidth}
+\begin{center}
+https://github.com/illinois-ceesd/timing
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item Data on key capabilities collected nightly
+\item Intended to track performance vs. code/features
+\item $\Delta$'s indicate change in performance
+\columnbreak
+\item New this cycle:
+\begin{itemize}
+\item Multi-case/comparitive plotting
+\item Tracking parallel cases
+\end{itemize}
+\end{itemize}
+\end{multicols}
+\end{minipage}\vfill
+\begin{center}
+  \includegraphics[width=.8\textwidth]{Figures/mtc/multicase_step.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Performance Monitoring on Lassen}
+\begin{minipage}[t][0.3\textheight][t]{\textwidth}
+\begin{center}
+https://github.com/illinois-ceesd/timing
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item Data on key capabilities collected nightly
+\item Intended to track performance vs. code/features
+\item $\Delta$'s indicate change in performance
+\columnbreak
+\item New this cycle:
+\begin{itemize}
+\item Multi-case/comparitive plotting
+\item Tracking parallel cases
+\end{itemize}
+\end{itemize}
+\end{multicols}
+\end{minipage}\vfill
+\begin{center}
+  \includegraphics[width=.8\textwidth]{Figures/mtc/prediction-scaling-tracking.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}\frametitle{Performance Monitoring on Lassen}
+\begin{minipage}[t][0.3\textheight][t]{\textwidth}
+\begin{center}
+https://github.com/illinois-ceesd/timing
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item Data on key capabilities collected nightly
+\item Intended to track performance vs. code/features
+\item $\Delta$'s indicate change in performance
+\columnbreak
+\item New this cycle:
+\begin{itemize}
+\item Multi-case/comparitive plotting
+\item Tracking parallel cases
+\end{itemize}
+\end{itemize}
+\end{multicols}
+\end{minipage}\vfill
+\begin{center}
+  \includegraphics[width=.8\textwidth]{Figures/mtc/y3-prediction-parallel-20230405.pdf}
+\end{center}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \Large
+    \textbf{Code Challenges}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+
+    % Partition lines and labels for 3 partitions
+    \draw[thick, blue] (5,0) -- (5,10);
+    \draw[thick, blue] (10,0) -- (10,10);
+    
+    \node at (2.66,9) {0};
+    \node at (7.99,9) {1};
+    \node at (13.33,9) {2};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+
+    % Partition lines and labels
+    \draw[thick, blue] (4,0) -- (4,10);
+    \draw[thick, blue] (8,0) -- (8,10);
+    \draw[thick, blue] (12,0) -- (12,10);
+
+    \node at (2,9) {0};
+    \node at (6,9) {1};
+    \node at (10,9) {2};
+    \node at (14,9) {3};
+\end{tikzpicture}
+\end{frame}
+
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\begin{tikzpicture}[scale=0.3]
+    % Grid
+    \draw[step=1, thin, black] (0,0) grid (16,10);
+    \draw[thick] (0,0) rectangle (16,10);
+    
+    % Red subregion
+    \foreach \i in {11, 12, 13, 14, 15} {
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+    
+    % Blue subregion
+    \foreach \i in {9, 10} {
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (\i+0.5, \j+0.5) circle (4pt);
+        }
+    }
+
+    % Partition lines and labels for 4 partitions (in blue)
+    \draw[thick, blue] (4,0) -- (4,10);
+    \draw[thick, blue] (8,0) -- (8,10);
+    \draw[thick, blue] (12,0) -- (12,10);
+    
+    \node[font=\bfseries, blue] at (2,9) {0};
+    \node[font=\bfseries, blue] at (6,9) {1};
+    \node[font=\bfseries, blue] at (10,9) {2};
+    \node[font=\bfseries, blue] at (14,9) {3};
+
+    % Partition lines for 3 partitions (in orange)
+    \draw[thick, orange] (5,0) -- (5,10);
+    \draw[thick, orange] (10,0) -- (10,10);
+    
+    \node[font=\bfseries, orange] at (2.5,8) {0};
+    \node[font=\bfseries, orange] at (7.5,8) {1};
+    \node[font=\bfseries, orange] at (13,8) {2};
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition 0
+    \draw[step=1, thin, black] (0,0) grid (4,10);
+    \draw[thick] (0,0) rectangle (4,10);
+    \node[font=\bfseries, blue] at (2,9) {0};
+    
+    % Partition 1
+    \begin{scope}[xshift=4.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \node[font=\bfseries, blue] at (2,9) {1};
+    \end{scope}
+    
+    % Partition 2 with blue and red subregions
+    \begin{scope}[xshift=9cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (1.5, \j+0.5) circle (4pt);
+            \fill[blue] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (2,9) {2};
+    \end{scope}
+    
+    % Partition 3 with red subregion
+    \begin{scope}[xshift=13.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);  % added this line for the last column of red dots in partition 3
+        }
+        \node[font=\bfseries, blue] at (2,9) {3};
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition 0
+    \draw[step=1, thin, black] (0,0) grid (5,10);
+    \draw[thick] (0,0) rectangle (5,10);
+    \node[font=\bfseries, orange] at (2.5,9) {0};
+    
+    % Partition 1 with blue subregion
+    \begin{scope}[xshift=5.5cm]
+        \draw[step=1, thin, black] (0,0) grid (5,10);
+        \draw[thick] (0,0) rectangle (5,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[blue] (3.5, \j+0.5) circle (4pt);
+            \fill[blue] (4.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (2.5,9) {1};
+    \end{scope}
+    
+    % Partition 2 with red subregion
+    \begin{scope}[xshift=11cm]
+        \draw[step=1, thin, black] (0,0) grid (6,10);
+        \draw[thick] (0,0) rectangle (6,10);
+        \foreach \j in {0, 1, 2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+            \fill[red] (4.5, \j+0.5) circle (4pt);
+            \fill[red] (5.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (3,9) {2};
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Grid without Border on Cutout}
+%\begin{tikzpicture}[scale=0.3]
+%
+%    % Draw only the visible cells
+%    \foreach \i in {0,1,2,3} {
+%        \foreach \j in {3,4,...,9} {
+%            \draw (\i,\j) rectangle (\i+1,\j+1);
+%        }
+%    }
+%    \draw (0,0) rectangle (1,3);
+%    \draw (0,0) rectangle (1,1);
+%    \draw (0,1) rectangle (1,2);
+%    \draw (0,2) rectangle (1,3);
+%
+%    % Adjusted border
+%    \draw[thick] (0,0) -- (1,0) -- (1,3) -- (4,3) -- (4,10) -- (0,10) -- cycle;
+%
+%\end{tikzpicture}
+%\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition (0,0)
+    \draw[step=1, thin, black] (0,0) grid (4,10);
+    \draw[thick] (0,0) rectangle (4,10);
+    \node[font=\bfseries, blue] at (2,9) {(0,0)};
+
+    % Partition (1,0)
+    \begin{scope}[xshift=4.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,10);
+        \draw[thick] (0,0) rectangle (4,10);
+        \node[font=\bfseries, blue] at (2,9) {(1,0)};
+    \end{scope}
+
+    % Partition (2,0) with the correct shape and border
+    \begin{scope}[xshift=9cm]
+        \foreach \i in {0,1,2,3} {
+            \foreach \j in {3,4,...,9} {
+                \draw (\i,\j) rectangle (\i+1,\j+1);
+            }
+        }
+        \draw (0,0) rectangle (1,3);
+        \draw (0,0) rectangle (1,1);
+        \draw (0,1) rectangle (1,2);
+        \draw (0,2) rectangle (1,3);
+        \draw[thick] (0,0) -- (1,0) -- (1,3) -- (4,3) -- (4,10) -- (0,10) -- cycle;
+        \node[font=\bfseries, blue] at (2,9) {(2,0)};
+    \end{scope}
+
+    % Partition (2,1) with blue subregion, adjusted position
+    \begin{scope}[xshift=13.5cm, yshift=6cm]
+        \draw[step=1, thin, black] (0,0) grid (2,4);
+        \draw[thick] (0,0) rectangle (2,4);
+        \foreach \j in {0,1,2,3} {
+            \fill[blue] (0.5, \j+0.5) circle (4pt);
+            \fill[blue] (1.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (1,3) {(2,1)};
+    \end{scope}
+
+    % Partition (2,2) with red subregion, adjusted position
+    \begin{scope}[xshift=13.5cm, yshift=2cm]
+        \draw[step=1, thin, black] (0,0) grid (1,3);
+        \draw[thick] (0,0) rectangle (1,3);
+        \foreach \j in {0,1,2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (0.5,2) {(2,2)};
+    \end{scope}
+
+    % Partition (3,0), adjusted position and dimensions
+    \begin{scope}[xshift=16cm, yshift=3.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,7);
+        \draw[thick] (0,0) rectangle (4,7);
+        \node[font=\bfseries, blue] at (2,6) {(3,0)};
+    \end{scope}
+
+    % Partition (3,2) with red subregion, adjusted position
+    \begin{scope}[xshift=16cm, yshift=-0.5cm]
+        \draw[step=1, thin, black] (0,0) grid (4,3);
+        \draw[thick] (0,0) rectangle (4,3);
+        \foreach \j in {0,1,2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, blue] at (2,2) {(3,2)};
+    \end{scope}
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+\begin{tikzpicture}[scale=0.3]
+
+    % Partition (0,0)
+    \draw[step=1, thin, black] (0,0) grid (5,10);
+    \draw[thick] (0,0) rectangle (5,10);
+    \node[font=\bfseries, orange] at (2.5,9) {(0,0)};
+
+    % Partition (1,0) with the correct shape, border, and panhandle grid
+    \begin{scope}[xshift=5.5cm]
+        \foreach \i in {0,1,2,3,4} {
+            \foreach \j in {3,4,...,9} {
+                \draw (\i,\j) rectangle (\i+1,\j+1);
+            }
+        }
+        \foreach \i in {0,1,2} {
+            \foreach \j in {0,1,2} {
+                \draw (\i,\j) rectangle (\i+1,\j+1);
+            }
+        }
+        \draw[thick] (0,0) -- (3,0) -- (3,3) -- (5,3) -- (5,10) -- (0,10) -- cycle;
+        \node[font=\bfseries, orange] at (2.5,9) {(1,0)};
+    \end{scope}
+
+    % Partition (1,1) with blue subregion, further adjusted position
+    \begin{scope}[xshift=9cm, yshift=-0.5cm]
+        \draw[step=1, thin, black] (0,0) grid (2,3);
+        \draw[thick] (0,0) rectangle (2,3);
+        \foreach \j in {0,1,2} {
+            \fill[blue] (0.5, \j+0.5) circle (4pt);
+            \fill[blue] (1.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (1,2) {(1,1)};
+    \end{scope}
+
+    % Partition (2,0)
+    \begin{scope}[xshift=12cm, yshift=3cm]
+        \draw[step=1, thin, black] (0,0) grid (6,7);
+        \draw[thick] (0,0) rectangle (6,7);
+        \node[font=\bfseries, orange] at (3,6) {(2,0)};
+    \end{scope}
+
+    % Partition (2,2) with red subregion
+    \begin{scope}[xshift=12cm, yshift=-0.5cm]
+        \draw[step=1, thin, black] (0,0) grid (6,3);
+        \draw[thick] (0,0) rectangle (6,3);
+        \foreach \j in {0,1,2} {
+            \fill[red] (0.5, \j+0.5) circle (4pt);
+            \fill[red] (1.5, \j+0.5) circle (4pt);
+            \fill[red] (2.5, \j+0.5) circle (4pt);
+            \fill[red] (3.5, \j+0.5) circle (4pt);
+            \fill[red] (4.5, \j+0.5) circle (4pt);
+            \fill[red] (5.5, \j+0.5) circle (4pt);
+        }
+        \node[font=\bfseries, orange] at (3,2) {(2,2)};
+    \end{scope}
+
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}
+\frametitle{M-to-N Restart}
+
+\begin{tikzpicture}[scale=0.3]
+    % ... [rest of your existing TikZ picture]
+
+    % Legend Box
+    \begin{scope}[xshift=20cm, yshift=8cm]
+        \draw[thick] (-1,0.5) rectangle (6,-3); % Adjusted the top border of the box
+        
+        \fill[blue] (0,-0.5) circle (6pt); % Blue dot
+        \node[align=left] at (3,-0.5) {Volume 0}; % Moved the label to the right
+        
+        \fill[red] (0,-2) circle (6pt);  % Red dot
+        \node[align=left] at (3,-2) {Volume 1}; % Moved the label to the right
+    \end{scope}
+\end{tikzpicture}
+\end{frame}
+
+\begin{frame}\frametitle{M-to-N Restarts}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \Large
+    \textbf{Wrapping Up \& Looking Ahead}
+\end{frame}
+
+
+\begin{frame}\frametitle{Summary and Next Steps}
+\begin{itemize}
+\item \mirgecom{} has Y3 prediction-supporting performance (poised to deliver more)
+\item Understanding \mirgecom{} performance is the next major focus
+\end{itemize}
+\begin{center}
+Next steps
+\end{center}
+\begin{multicols}{2}
+\begin{itemize}
+\item Understanding and improving performance:
+\begin{itemize}
+\item Instrumentation (Mem \& Tags) \prj{\tiny}{Kaushik Kulkarni, M.~Diener}
+\item Code-to-kernel correspondence improvements: \prj{\tiny}{07c, M.~Diener}
+\item Auto-tuning \prj{\tiny}{Nick Christensen}
+\item Node-aware communicators \prj{\tiny}{Shelby Lockhart}
+\item \sout{DAG Splat} \prj{\tiny}{Kaushik Kulkarni}
+\item Performance model
+\end{itemize}
+\item Upcoming enhancements:
+\begin{itemize}
+\item Workflow: \textit{Parsl} \prj{\tiny}{D.~Friedel}
+\item Testing: Mixtures and BCs: Moser MMS
+\item Entropy-Stable DG \prj{\tiny}{Zurui Wang}
+\item Hexahedral elements \prj{\tiny}{Addison Alvey-Blanco}
+\item M-to-N restart (HDF5)
+\end{itemize}
+\end{itemize}
+%\columnbreak
+%\end{multicols}
+%\vspace{-20pt}
+%\begin{center}
+%  \includegraphics[width=.48\textwidth]{Figures/mtc/Nvidia-A100-performance.eps}
+%  \prj{\tiny}{Nick Christensen}
+%\end{center}
+\end{multicols}
+\end{frame}
+
+% - PLANS CHANGE
+%\begin{frame}\frametitle{Developments for Y3 Prediction}
+%\begin{center}
+%Y3 Driver\\
+%https://github.com/illinois-ceesd/drivers\_y3-prediction
+%\end{center}
+%\begin{multicols}{2}
+%\begin{itemize}
+%\item Kitchen sink (KS) feature set
+%  \begin{itemize}
+%  \item Coupled CNS + Wall/heat
+%  \item Ethylene mixture, reaction sources, species limiting, power-law transport
+%  \item Wall degradation, oxygen diffusion, reactive/porous mat.
+%  \item Artificial physical viscosity, and sponge
+%  \item OFF: Mixture transport, spectral filtering on RHS
+ % \end{itemize}
+%\item Meshes: 2D/3D updated geom, 2 test sects., shallower cavity
+%\item Sims: 3D coupled (6M,p=4 256 GPUs), and smaller
+%\item Scalability scripting and inputs (@add-scalability)
+%\end{itemize}
+%\end{multicols}
+%\end{frame}
+
+%\begin{frame}\frametitle{Path to Y3 Prediction}
+%\begin{multicols}{2}
+%\begin{itemize}
+%\item Physics and modeling: Radiation \& Phenolics (mild gap)
+%\item Numerics and discretization
+%  \begin{itemize}
+%  \item Mesh modifications (upstream injector, possible refinement)
+%  \item Maybe (gaps suspected):
+%    \begin{itemize}
+%    \item Higher order mesh + filtering (likely!)
+%    \item New AV
+%    % \item Slope limiters
+%    \item Multi-order meshes/volumes
+%    \item ESDG? \prj{\tiny}{Zirui Wang}
+%    \item Stop gap: High viscosity, maybe reduced physics
+%    \end{itemize}
+%  \end{itemize}
+%\columnbreak
+%\item Performance - closing gaps
+%  \begin{itemize}
+%  \item Cost per step (inert, comb): (.5, 1.4)s
+%  \item Sim time: 1ms inert, 6e-4 w/comb
+%  \item Estimated DT: .5ns
+%  \item 12d inert, 19d comb
+%  \item Any improvements welcomed
+%  \end{itemize}
+%\end{itemize}
+%\end{multicols}
+%\end{frame}
+
+%\begin{frame}\frametitle{Path to Y3 Prediction}
+%\begin{center}
+%\item Preparing for prediction runs
+%\end{center}
+%\begin{multicols}{2}
+%\begin{itemize}
+%\item 3M(ish) 3D p=3 elems 
+%\item Potentially serious issues: Shock/boundary, fluid/material
+%\item Investigating higher order, with filtering, high visc
+%\item Many scoping, physics-targeted, and debugging runs
+%\end{itemize}
+%\includegraphics[width=.3\textwidth]{Figures/mtc/hot_edge.png}
+%\includegraphics[width=.4\textwidth]{Figures/mtc/3d_yellow_cells.png}
+%\includegraphics[width=.4\textwidth]{Figures/mtc/2d_yellow_cells.png}
+%\end{multicols}
+%\end{frame}
+
+%\begin{frame}\frametitle{Path to Y3 Prediction}
+%\begin{multicols}{2}
+%\begin{itemize}
+%\item Some pain points
+%  \begin{itemize}
+%  \item Transfinite or ultra fine mesh to stabilize fluid boundary
+    % \begin{itemize}
+    % \item Increases complexity of meshing by a lot
+    % \item Increases number of elements
+    % \item Hex support desired, might help
+    % \end{itemize}
+%  \item Lack confidence in correctness of model implementation
+    % \begin{itemize}
+    % \item Problem with numerics, or defect?
+    % \item More extensive testing!
+    % \item More experience/intuition about the numerics
+    % \item ESDG?, FV?
+    % \end{itemize}
+%  \item Small problem performance is a drag
+    % \begin{itemize}
+    % \item 20m compile (this is fine, not fine)
+    % \item DAG splat elim, faster compile
+    % \end{itemize}
+%  \item Makes lots of big files
+    % \begin{itemize}
+    % \item PARSL
+    % \item Viz Driver
+    % \end{itemize}
+%  \item Development and testing viscosity
+%  \item Long queues on available platforms
+%  \item Cannot change size of run to adapt to resources
+%  \end{itemize}
+%\end{itemize}
+%\end{multicols}
+%\end{frame}
+
+
+%\begin{frame}\frametitle{Near-term Development Outlook}
+%\begin{multicols}{2}
+%\begin{itemize}
+%\item Now
+%  \begin{itemize}
+%  \item Understanding performance (why is it hard?)
+%    \begin{itemize}
+%    \item Code $\leftrightarrow$ Kernel \prj{\tiny}{M.~Diener}
+%    \item Performance model
+%    \item Kernel rooflines \prj{\tiny}{Nick Christensen}
+%    \item Feature-specific
+%    \end{itemize}
+%  \item Evaluate Tioga
+%  \item Boundary verif (MMS)
+%  \item PARSL for testing \prj{\tiny}{D.~Friedel}
+%  \end{itemize}
+%\end{itemize}
+%\columnbreak
+%\begin{itemize}
+%\item For prediction: (4mo horizon)
+%  \begin{itemize}
+%  \item Radiation \& phenolics \prj{\tiny}{T.~Ricciardi, M.~Smith}
+%  \item \sout{DAG splat} \prj{\tiny}{Kaushik Kulkarni}
+%  \item Mechanism parameterization for UQ
+%  \item PARSL for UQ \prj{\tiny}{D.~Friedel}
+%  \item Stabilizing prediction runs \prj{\tiny}{M.~Anderson}
+%    \begin{itemize}
+%    \item ESDG \prj{\tiny}{Zirui Wang}
+%    \item Mixed-order
+%    \item Quad/Hex support \prj{\tiny}{Addison Alvey-Blanco}
+%    \item Curvlinear elements
+%    \end{itemize}
+%  \end{itemize}
+%\end{itemize}
+%\end{multicols}
+%\end{frame}
+
+%\begin{frame}\frametitle{Nice to have any time}
+%\begin{multicols}{2}
+%\begin{itemize}
+%\item Reducing prediction pain (important):
+%  \begin{itemize}
+%  \item Reduce technical debt (merges)
+%  \item Driver unification
+%  \item Help with mesh generation
+%  \item Visualization driver
+%  \item PARSL for queue management
+%  \item M-to-N restart
+ % \end{itemize}
+%%\item Potentially high-impact performance improvements
+%  \begin{itemize}
+%  \item Kernel Autotuning \prj{\tiny}{Nick Christensen}
+%  \item Node-aware communication \prj{\tiny}{Shelby Lockhart}
+%  \item DAG/compile time improvements \prj{\tiny}{Kaushik Kulkarni, M.~Diener}
+%  \item Instrumentation (Mem \& Tags) \prj{\tiny}{Kaushik Kulkarni, M.~Diener}
+%  \end{itemize}
+%\item Future sims
+%  \begin{itemize}
+%  \item Mesh motion (interface regression)
+%  \item Wall degradation
+%  \item Turbulence modeling
+%  \end{itemize}
+%\end{itemize}
+%\end{multicols}
+%\end{frame}
+

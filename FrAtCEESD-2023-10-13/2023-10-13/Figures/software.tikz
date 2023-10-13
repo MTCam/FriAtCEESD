@@ -1,0 +1,28 @@
+\tikzstyle{every path} = [thick,black]
+
+\begin{tikzpicture}[>=latex',line join=bevel,scale=0.5,transform shape]
+  \node[c_mirgecom] (mirgecom) at (128.0bp,394.0bp) [draw,ellipse] {mirgecom};
+  \node[c_meshmode] (meshmode) at (66.0bp,250.0bp) [draw,ellipse] {meshmode};
+  \node[c_grudge] (grudge) at (101.0bp,322.0bp) [draw,ellipse] {grudge};
+  \node[c_loopy] (loopy) at (165.0bp,178.0bp) [draw,ellipse] {loopy};
+  \node[c_pytato] (pytato) at (206.0bp,250.0bp) [draw,ellipse] {pytato};
+  \node[c_pyopencl] (pyopencl) at (89.0bp,106.0bp) [draw,ellipse] {pyopencl};
+  \node[c_modepy] (modepy) at (56.0bp,178.0bp) [draw,ellipse] {modepy};
+  \node[c_pymbolic] (pymbolic) at (194.0bp,106.0bp) [draw,ellipse] {pymbolic};
+  \node[c_pocl] (pocl) at (89.0bp,34.0bp) [draw,ellipse] {pocl};
+  \draw [->] (mirgecom) ..controls (83.575bp,370.85bp) and (65.825bp,357.6bp)  .. (57.0bp,340.0bp) .. controls (47.309bp,320.67bp) and (50.82bp,296.05bp)  .. (meshmode);
+  \draw [->] (mirgecom) ..controls (118.38bp,368.06bp) and (114.63bp,358.33bp)  .. (grudge);
+  \draw [->] (mirgecom) ..controls (137.95bp,365.74bp) and (142.3bp,352.27bp)  .. (145.0bp,340.0bp) .. controls (155.24bp,293.54bp) and (160.68bp,238.3bp)  .. (loopy);
+  \draw [->] (mirgecom) ..controls (145.03bp,365.67bp) and (153.18bp,352.19bp)  .. (160.0bp,340.0bp) .. controls (171.75bp,319.0bp) and (184.24bp,294.7bp)  .. (pytato);
+  \draw [->] (meshmode) ..controls (102.68bp,223.07bp) and (122.14bp,209.3bp)  .. (loopy);
+  \draw [->] (meshmode) ..controls (90.689bp,223.14bp) and (100.44bp,209.89bp)  .. (105.0bp,196.0bp) .. controls (111.74bp,175.46bp) and (106.6bp,151.26bp)  .. (pyopencl);
+  \draw [->] (meshmode) ..controls (62.426bp,223.98bp) and (61.102bp,214.71bp)  .. (modepy);
+  \draw [->] (grudge) ..controls (88.625bp,296.25bp) and (83.61bp,286.22bp)  .. (meshmode);
+  \draw [->] (grudge) ..controls (113.31bp,293.86bp) and (119.52bp,280.15bp)  .. (125.0bp,268.0bp) .. controls (134.58bp,246.76bp) and (145.41bp,222.66bp)  .. (loopy);
+  \draw [->] (loopy) ..controls (138.91bp,152.97bp) and (125.17bp,140.32bp)  .. (pyopencl);
+  \draw [->] (loopy) ..controls (175.22bp,152.34bp) and (179.32bp,142.43bp)  .. (pymbolic);
+  \draw [->] (pyopencl) ..controls (89.0bp,79.983bp) and (89.0bp,70.712bp)  .. (pocl);
+  \draw [->] (pytato) ..controls (191.47bp,224.19bp) and (185.2bp,213.49bp)  .. (loopy);
+  \draw [->] (pytato) ..controls (207.38bp,213.92bp) and (207.7bp,184.89bp)  .. (205.0bp,160.0bp) .. controls (204.07bp,151.46bp) and (202.41bp,142.26bp)  .. (pymbolic);
+  %\draw[red!50] (0,0) rectangle (230pt, 387.0pt);
+\end{tikzpicture}

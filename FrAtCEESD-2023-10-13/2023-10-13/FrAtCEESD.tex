@@ -1,0 +1,195 @@
+\documentclass[aspectratio=169]{beamer}
+
+\input{../ceesd-macros.tex}
+
+%\newif\ifmovies
+%\moviestrue
+%\moviesfalse
+
+%\newif\ifsubs
+%\substrue
+%\subsfalse
+
+\newif\ifnotes
+\notestrue
+%\notesfalse
+
+
+% MTC additions - ripped from Kaushik's KK 02 Additions
+
+% Taken from https://www.overleaf.com/learn/latex/code_listing
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{kkcodestyle}{
+    language=python,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    escapeinside=@@
+}
+
+% End MTC Additions
+
+% LO start
+\newtcolorbox{lukedef}[1][Definition:]{
+colback=white,
+colbacktitle=white,
+coltitle=IllinoisOrange,
+colframe=IllinoisBlue,
+boxrule=1pt,
+titlerule=0pt,
+%arc=15pt,
+title={\strut#1},
+}
+% LO end
+
+% MJS Additions
+\usepackage{listings}
+
+\definecolor{mintedlikecommentcolor}{rgb}{0.16,0.51,0.51}
+\definecolor{mintedlikekeywordcolor}{rgb}{0,0.6,0}
+\definecolor{mintedlikestringcolor}{rgb}{0.79,0,0}
+\newcommand{\mintedlikebasicstyle}[1]{\ttfamily#1\linespread{4}}
+\lstdefinestyle{mintedlike}{
+    language=python,
+    basicstyle=\mintedlikebasicstyle{\normalsize},
+    commentstyle=\itshape\color{mintedlikecommentcolor},
+    keywordstyle=\color{mintedlikekeywordcolor},
+    stringstyle=\color{mintedlikestringcolor},
+    columns=fullflexible,
+    breakatwhitespace=false,
+    breaklines=false,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    belowskip=-0.6\baselineskip,
+    escapeinside=&&
+}
+% End MJS Additions
+
+\begin{document}
+
+
+% %======================================================================
+% \begin{frame}\frametitle{04 --- Simulations }
+% \setcounter{framenumber}{0}
+
+
+% \vspace*{0.3in}
+% {
+%   \tiny
+%   \textbf{Details on full-system simulation status including a discussion of integration of the
+%     necessary physics modules and scaling of the present code.}
+
+%   You should address the following:
+%   \begin{itemize}
+%   \item The goals of this year’s full system demonstration(s), how it contributes to your
+%     ultimate year-five predictive simulation, and the new results and insights into
+%     predictiveness that were obtained.
+%   \item Relative to the year-five prediction, what can and cannot be computed and predicted at
+%     this point?
+%   \item What are the key physics components still missing from your simulation as determined
+%     by your roadmap and UQ process, and when do you expect to incorporate them?
+%   \item Describe the scaling and performance obtained, including a discussion of any
+%     limitations encountered.
+%   \item How have you verified and validated your simulations?
+%   \end{itemize}
+
+% \textbf{Provide a slide outlining the major risks involved in reaching your predictive goal and a
+%   mitigation plan for those risks.}
+% }
+
+% \end{frame}
+% %======================================================================
+
+
+
+%======================================================================
+\begin{frame}\frametitle{}
+
+\vspace*{0.2in}
+
+\hspace*{0.0in}\textrm{{\huge\bfseries\color{myOrange} Fr@CEESD}}
+
+\vspace*{0.2in}
+\hrule
+\begin{center}
+\includegraphics[width=0.7\textwidth]{Figures/coverart-sim.pdf}
+\end{center}
+\hrule
+
+\vspace*{0.1in}
+\hfill\cPI{Mike Campbell} \rPI{(CS)}  % \\
+%\ \hbox{}\hfill\cPI{Matt Smith} \rPI{(NCSA)}\\
+%\ \hbox{}\hfill\cPI{Mike Campbell} \rPI{(NCSA)}\\
+%\ \hbox{}\hfill\cPI{Mike Anderson} \rPI{(NCSA)}
+
+\end{frame}
+%======================================================================
+
+%======================================================================
+%\begin{frame}[fragile]\frametitle{Outline}
+%  \begin{tabular}{m{8cm}m{6cm}}
+%  \begin{itemize}
+%    \setlength{\itemsep}{0.0in}
+%    \item Y2/Y3 Simulation infrastructure\prj{\tiny}{M.~Smith}
+%      \begin{itemize}
+%        \item How-to guide to \mirgecom
+%        \item Wall modeling and coupling
+%        \item Distributed DAG discussion
+%      \end{itemize}
+%  \end{itemize}
+%  &
+%  \includegraphics[width=6cm]{./Figures/smith/wall_kappa-clip.png}
+%  \\[0cm]
+%  \begin{itemize}
+%    \setlength{\itemsep}{0.0in}
+%    \item \mirgecom{} Performance \prj{\tiny}{M.~Campbell}
+%      \begin{itemize}
+%        \item Verification overview: testing, coverage
+%        \item Performance highlights: scaling, monitoring
+%      \end{itemize}
+%  \end{itemize}
+%  &
+%  \includegraphics[width=6cm]{./Figures/timing-clip.png}
+%  \\
+%  \begin{itemize}
+%    \setlength{\itemsep}{0.2in}
+%    \item Prediction results\prj{\tiny}{M.~Anderson}
+%      \begin{itemize}
+%        \item Simulation status for Y3
+%        \item Parsl, workflow plans \prj{\tiny}{Doug Friedel}
+%      \end{itemize}
+%  \end{itemize}
+%  &
+%  \includegraphics[width=6cm]{./Figures/Noslip_isolator_clipped.png}
+%  \\
+%  \begin{itemize}
+%    \setlength{\itemsep}{0.2in}
+%    \item Summary and risks \prj{\tiny}{Freund, Olson}
+%  \end{itemize}
+%  &
+%  \end{tabular}
+%\end{frame}
+%======================================================================
+
+
+\input{thetalk-2023-10-13.tex}
+\input{../ceesd-acknowledgement.tex}
+
+\end{document}
