@@ -1,0 +1,210 @@
+\usepackage[absolute, overlay]{textpos}
+
+% Define a new environment for a code snippet box
+\newtcolorbox{codebox}[1][]{
+  colback=white,
+  colframe=black!75!black,
+  width=\linewidth,
+  arc=4pt,
+  outer arc=4pt,
+  left=6pt,
+  right=6pt,
+  boxsep=5pt,
+  #1
+}
+
+\newtcolorbox{fancycode}[3][]{
+  colback=white,
+  colframe=black!75!black,
+  width=0.8\linewidth,
+  arc=1pt,
+  outer arc=1pt,
+  left=1pt,
+  right=1pt,
+  top=1pt,
+  bottom=1pt,
+  boxsep=0pt,
+  overlay={
+    % Draw the tab
+    \draw[fill=white, rounded corners=1mm] 
+      ([xshift=-0.5cm, yshift=2pt]frame.north east) --
+      ([yshift=2pt]frame.north east) --
+      (frame.north east) --
+      ([xshift=-0.5cm]frame.north east) -- cycle;
+    % Add the source link
+    \node[anchor=north east, font=\tiny, text=black] 
+      at ([xshift=-0.25cm, yshift=1pt]frame.north east) {Source: \href{#2}{\texttt{#3}}};
+  },
+  #1
+}
+
+% Define a new tcolorbox environment for the code block
+\newtcolorbox{codeblock}[3][]{
+  colback=white,
+  colframe=black!75!black,
+  width=0.8\linewidth,
+  arc=1pt,
+  outer arc=1pt,
+  left=1pt,
+  top=1pt,
+  bottom=1pt,
+  right=1pt,
+  boxsep=0pt,
+  overlay={
+    \node[anchor=south east, font=\tiny, text=black] at (frame.south east) {Source: \href{#2}{\texttt{#3}}};
+  },
+  #1
+}
+
+\newtcolorbox{emptyblock}[2][]{
+  colback=white,
+  colframe=black!75!black,
+  width=0.8\linewidth,
+  arc=1pt,
+  outer arc=1pt,
+  left=1pt,
+  top=1pt,
+  bottom=1pt,
+  right=1pt,
+  boxsep=0pt,
+  overlay={
+    % Draw the tab
+    \draw[fill=white, draw=black!75!black, rounded corners=1mm] 
+      ([xshift=-1cm, yshift=1cm]frame.north east) rectangle ++(1cm, 0.5cm);
+    % Add the text
+    \node[anchor=north east, font=\tiny, text=black] 
+      at ([xshift=-0.5cm, yshift=1.25cm]frame.north east) {#2};
+  },
+  #1
+}
+\newcommand{\blockwithtab}[2]{
+  \begin{tikzpicture}
+    % Draw the box
+    \node[anchor=north west, draw=black!75!black, fill=white, rounded corners=1mm, text width=0.8\linewidth, inner sep=5pt] (box) {#1};
+    % Draw the tab
+    \node[anchor=south east, draw=black!75!black, fill=white, rounded corners={1mm,1mm,0mm,0mm}, text width=1cm, inner sep=2pt, yshift=0.5pt] at (box.north east) {#2};
+  \end{tikzpicture}
+}
+
+%\newcommand{\blockwithtab}[2]{
+%  \begin{tikzpicture}
+%    % Draw the box
+%    \node[anchor=north west, draw=black!75!black, fill=white, rounded corners=1mm, text width=0.8\linewidth, inner sep=5pt] (box) {#1};
+%    % Draw the tab
+%    \node[anchor=south, draw=black!75!black, fill=white, rounded corners=1mm, text width=1cm, inner sep=2pt, yshift=2pt] at (box.north east) {#2};
+%  \end{tikzpicture}
+%}
+%\newcommand{\blockwithtab}[3][]{
+%  \begin{tikzpicture}
+%    % Draw the box
+%    \node[anchor=north west, draw=black!75!black, fill=white, rounded corners=1mm, text width=0.8\linewidth, inner sep=5pt] (box) {#3};
+%    % Draw the tab
+%    \node[anchor=south, draw=black!75!black, fill=white, rounded corners=1mm, text width=1cm, inner sep=2pt, yshift=2pt] at (box.north east) {#2};
+%  \end{tikzpicture}
+%}
+
+% Kaushik's code listings
+% Taken from https://www.overleaf.com/learn/latex/code_listing
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\lstdefinestyle{kkcodestyle}{
+    language=python,
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    aboveskip=0pt,
+    belowskip=0pt,
+    showtabs=false,
+    tabsize=2,
+    escapeinside=@@
+}
+
+% Luke Olson's definition box
+\newtcolorbox{lukedef}[1][Definition:]{
+colback=white,
+colbacktitle=white,
+coltitle=IllinoisOrange,
+colframe=IllinoisBlue,
+boxrule=1pt,
+titlerule=0pt,
+%arc=15pt,
+title={\strut#1},
+}
+
+% Matt's code listings
+\definecolor{mintedlikecommentcolor}{rgb}{0.16,0.51,0.51}
+\definecolor{mintedlikekeywordcolor}{rgb}{0,0.6,0}
+\definecolor{mintedlikestringcolor}{rgb}{0.79,0,0}
+\newcommand{\mintedlikebasicstyle}[1]{\ttfamily#1\linespread{4}}
+\lstdefinestyle{mintedlike}{
+    language=python,
+    basicstyle=\mintedlikebasicstyle{\normalsize},
+    commentstyle=\itshape\color{mintedlikecommentcolor},
+    keywordstyle=\color{mintedlikekeywordcolor},
+    stringstyle=\color{mintedlikestringcolor},
+    columns=fullflexible,
+    breakatwhitespace=false,
+    breaklines=false,
+    keepspaces=true,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    belowskip=-0.6\baselineskip,
+    escapeinside=&&
+}
+% End MJS Additions
+
+
+\newtcolorbox{codeblock2}[1][]{
+  colback=white,
+  colframe=black!75!black,
+  width=0.8\linewidth,
+  arc=1pt,
+  outer arc=1pt,
+  left=1pt,
+  right=1pt,
+  top=1pt,
+  bottom=0pt,
+  boxsep=0pt,
+  #1
+}
+
+\newcommand{\codeblockwithtab}[2]{
+  \begin{tikzpicture}
+    % Draw the tab
+    \node[draw, fill=white, rounded corners=1mm, anchor=south east] 
+      at (0.8\linewidth, 0.5cm) {Source: \href{#1}{\texttt{#2}}};
+    % Draw the code block
+      \node[anchor=north west] at (0,0) {
+        \begin{codeblock2}
+         \lstinputlisting[style=kkcodestyle, basicstyle=\tiny, language=Python]{Figures/mtc/rhs_sample.py}
+        \end{codeblock2}
+      };
+  \end{tikzpicture}
+}
+\newcommand{\snippetbox}[2]{
+  \begin{tikzpicture}
+    % Draw the box
+    \node[draw=black!75!black, fill=white, rounded corners=1mm, text width=0.8\linewidth, inner sep=5pt, anchor=north west] (box) {
+        \lstinputlisting[style=kkcodestyle, basicstyle=\tiny, language=Python]{#1}
+    };
+    
+    % Draw the tab
+    \draw[thin, rounded corners=1mm] (box.north east) -- ++(0,0.3) -- ++(-1,0) [rounded corners=0mm] -- ++(0,-0.3) -- cycle;
+    \node[font=\tiny] at ([xshift=-0.5cm, yshift=1.5mm] box.north east) {#2};    % Draw the tab
+    % \draw[thick, rounded corners=1mm] (box.north east) -- ++(0,0.5) -- ++(-1,0) [rounded corners=0mm] -- ++(0,-0.5) -- cycle;
+    % \node[font=\tiny] at ([xshift=-0.5cm, yshift=2.25mm] box.north east) {#2};
+  \end{tikzpicture}
+}

@@ -1373,3 +1373,73 @@
     % ... add other elements of your illustration
 \end{tikzpicture}
 \end{frame}
+
+    \node[anchor=south west, xshift=10pt, yshift=30pt] at (current page.south west) {
+     \includegraphics[width=0.07\textwidth]{github_logo.png}
+    };
+
+      % Text quadrant
+  \begin{minipage}[t]{0.45\textwidth}
+    \begin{itemize}
+      \item Collected in short Lassen DAT on V100 GPUs
+      \item Prediction domain and driver with increasing feature complexity
+        \begin{itemize}
+          \item Fluid: NS-only, 2 species
+          \item AV: Fluid + Artificial Viscosity fields and eqns
+          \item AVMix: AV + 7 species mixture EOS
+          \item AVMixLimit: AVMix + species limiter
+          \item FullPhysics: AVMixLimit + PowerLawTransport + Wall
+        \end{itemize}
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  % Top-right quadrant
+  \begin{minipage}[t]{0.45\textwidth}
+    \includegraphics[width=\linewidth]{/mnt/data/StartupTimes.pdf}
+    \centering
+    \small Startup Times
+  \end{minipage}
+  
+  \vfill
+  
+  % Bottom-left quadrant
+  \begin{minipage}[b]{0.45\textwidth}
+    \includegraphics[width=\linewidth]{/mnt/data/RHSCompileTimes.pdf}
+    \centering
+    \small RHS Compile Times
+  \end{minipage}
+  \hfill
+  % Bottom-right quadrant
+  \begin{minipage}[b]{0.45\textwidth}
+    \includegraphics[width=\linewidth]{/mnt/data/SimulationStepTimes.pdf}
+    \centering
+    \small Simulation Step Times
+  \end{minipage}
+
+    \begin{columns}[T]  % [T] is for top vertical alignment
+    % Left Column
+    \begin{column}{0.5\textwidth}
+      % Top left: Text
+      \begin{itemize}
+        \item Collected in short Lassen DAT on V100 GPUs
+        \item Prediction domain and driver with increasing feature complexity
+          \begin{itemize}
+            \item Fluid: NS-only, 2 species
+            \item AV: Fluid + Artificial Viscosity fields and eqns
+            \item AVMix: AV + 7 species mixture EOS
+            \item AVMixLimit: AVMix + species limiter
+            \item FullPhysics: AVMixLimit + PowerLawTransport + Wall
+          \end{itemize}
+      \end{itemize}
+      % Bottom left: RHS Compile Times
+      \includegraphics[width=\textwidth]{Figures/RHSCompileTimes.pdf}
+    \end{column}
+    
+    % Right Column
+    \begin{column}{0.5\textwidth}
+      % Top right: Startup Times
+      \includegraphics[width=\textwidth]{Figures/StartupTimes.pdf}
+      % Bottom right: Simulation Step Times
+      \includegraphics[width=\textwidth]{Figures/SimulationStepTimes.pdf}
+    \end{column}
+  \end{columns}
