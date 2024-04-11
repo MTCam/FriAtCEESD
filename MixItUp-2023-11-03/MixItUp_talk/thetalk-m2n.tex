@@ -1285,5 +1285,26 @@ Next steps
   \item Tracks state quantities as well as profiling data
   \end{itemize}
 \end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]\frametitle{Tensor Product Element Timings}
+
+  \begin{itemize}
+  \item Nascent support for tensor-product elements (TPE) [Quads and Hexes]
+  \item Initial tests in \textit{mirgecom} ACTII pass physics tests, but performance is prohibitive
+  \item Testing improvements... more data real soon
+  \end{itemize}
+\begin{table}
+\centering
+\begin{tabular}{|l|c|c|c|c|}
+\hline
+\multirow{2}{*}{Test Case} & \multicolumn{2}{c|}{Compile Time (s)} & \multicolumn{2}{c|}{Step Time (s)} \\ \cline{2-5} 
+                           & T       & Q      & T       & Q       \\ \hline
+Smoke Test 2D (Single Gas) & 40.3    & 225.8  & 0.044   & 0.11    \\ \hline
+Smoke Test KS (Mixture)    & 47.0    & 2372.2 & 0.91    & 11.6    \\ \hline
+KS w/(AV+Wall) OFF         & 105.6   & 505.4  & 0.89    & 6.7     \\ \hline
+\end{tabular}
+\caption{Compilation and Simulation Step Times for 2D Finite Elements (T for Triangles, Q for Quads)}
+\end{table}
 
 \end{frame}
